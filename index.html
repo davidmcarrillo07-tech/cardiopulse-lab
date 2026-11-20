@@ -96,6 +96,7 @@
         <button data-tab="sim" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-emerald-600 text-white transition whitespace-nowrap" data-i18n="nav_sim">Simulador</button>
         <button data-tab="electrodes" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800 transition whitespace-nowrap" data-i18n="nav_electrodes">Electrodos</button>
         <button data-tab="coronary" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800 transition whitespace-nowrap" data-i18n="nav_coronary">Coronarias & SCA</button>
+        <button data-tab="hypertrophy" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800 transition whitespace-nowrap">Hipertrofias &amp; Válvulas</button>
         <button data-tab="hf" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800 transition whitespace-nowrap">IC &amp; Válvulas</button>
         <button data-tab="learn" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800 transition whitespace-nowrap" data-i18n="nav_learn">Bloques</button>
         <button data-tab="calc" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800 transition whitespace-nowrap" data-i18n="nav_calc">Calculadoras</button>
@@ -495,6 +496,121 @@
             <canvas id="hf12LeadCanvas" class="w-full h-96 block"></canvas>
           </div>
           <div id="hfEcgPearls" class="text-xs bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-slate-300 leading-relaxed"></div>
+        </div>
+      </div>
+    </section>
+    <!-- ==================== TAB 3C: HIPERTROFIAS (4 CAVIDADES) & VÁLVULAS ==================== -->
+    <section id="tab-hypertrophy" class="tab-panel hidden space-y-4">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <!-- Columna Izquierda: Diagrama Interactivo de Cavidades, Válvulas y Controles -->
+        <div class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <h2 class="text-sm font-semibold text-white">Hipertrofia de 4 Cavidades &amp; Válvulas</h2>
+              <p id="hypSelectedLabel" class="text-xs text-emerald-400 font-medium">Sin hipertrofia activa (Basal)</p>
+            </div>
+            <button id="hypClearBtn" class="text-xs text-emerald-400 hover:underline">Limpiar</button>
+          </div>
+
+          <!-- Botones de las 4 cavidades -->
+          <div>
+            <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Cavidades (Crecimiento / Hipertrofia):</p>
+            <div class="grid grid-cols-2 gap-1.5 text-xs">
+              <button data-hyp-chamber="RA" class="hyp-chamber-btn px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-sky-900/50 border border-slate-700 text-slate-200 font-medium text-left">1. Aurícula Derecha (HAD)</button>
+              <button data-hyp-chamber="LA" class="hyp-chamber-btn px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-rose-900/50 border border-slate-700 text-slate-200 font-medium text-left">2. Aurícula Izquierda (HAI)</button>
+              <button data-hyp-chamber="RV" class="hyp-chamber-btn px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-sky-900/50 border border-slate-700 text-slate-200 font-medium text-left">3. Ventrículo Derecho (HVD)</button>
+              <button data-hyp-chamber="LV" class="hyp-chamber-btn px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-rose-900/50 border border-slate-700 text-slate-200 font-medium text-left">4. Ventrículo Izquierdo (HVI)</button>
+            </div>
+          </div>
+
+          <!-- Selector de alteración valvular asociada -->
+          <div class="flex items-center justify-between gap-2 text-xs">
+            <span class="text-slate-300 font-medium">Alteración valvular:</span>
+            <select id="hypValveSelect" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-xs text-slate-200">
+              <option value="none">Ninguna / Normal</option>
+              <option value="tricuspid_reg">Insuficiencia Tricuspídea ( sobrecarga AD/VD )</option>
+              <option value="pulmonic_sten">Estenosis Pulmonar (sobrecarga VD)</option>
+              <option value="mitral_sten">Estenosis Mitral (sobrecarga AI)</option>
+              <option value="mitral_reg">Insuficiencia Mitral (volumen AI + VI)</option>
+              <option value="aortic_sten">Estenosis Aórtica (presión VI)</option>
+              <option value="aortic_reg">Insuficiencia Aórtica (volumen VI)</option>
+            </select>
+          </div>
+
+          <!-- Grado de hipertrofia -->
+          <label class="flex items-center justify-between gap-3 text-xs">
+            <span class="text-slate-300">Grado de hipertrofia (%)</span>
+            <input id="hypSeveritySlider" type="range" min="0" max="100" value="80" step="10" class="flex-1 accent-emerald-500">
+            <span id="hypSeverityVal" class="mono w-12 text-right text-emerald-400">80%</span>
+          </label>
+
+          <!-- Diagrama SVG estilo simulador con 4 cavidades, válvulas y grandes vasos -->
+          <div class="bg-slate-950/90 rounded-xl border border-slate-800 p-2 flex justify-center">
+            <svg id="hypHeartSvg" viewBox="0 0 320 290" class="w-full max-w-xs h-64">
+              <!-- Grandes vasos -->
+              <rect x="92" y="12" width="14" height="52" rx="3" fill="#2563eb" opacity="0.7"/>
+              <path d="M132 132 Q124 72 74 64 L74 78 Q112 84 118 134 Z" fill="#38bdf8" opacity="0.65"/>
+              <path d="M186 132 Q184 42 228 42 Q256 42 256 92 L256 265 L240 265 L240 94 Q240 58 224 58 Q202 58 204 132 Z" fill="#f43f5e" opacity="0.75"/>
+
+              <!-- Silueta externa -->
+              <path d="M160 268 C98 240 50 182 55 114 C59 64 99 38 143 54 C152 58 158 65 160 72 C162 65 168 58 177 54 C221 38 261 64 265 114 C270 182 222 240 160 268 Z" fill="#1e1b2e" stroke="#475569" stroke-width="2.2"/>
+
+              <!-- 4 Cavidades -->
+              <ellipse id="hypCavRA" class="chamber" cx="106" cy="94" rx="30" ry="26" fill="#1e3a8a" stroke="#60a5fa" stroke-width="2"/>
+              <ellipse id="hypCavLA" class="chamber" cx="212" cy="92" rx="30" ry="26" fill="#4c1d24" stroke="#fb7185" stroke-width="2"/>
+              <path id="hypCavRV" class="chamber" d="M76 130 Q112 122 152 138 L150 236 Q98 214 76 130 Z" fill="#172554" stroke="#38bdf8" stroke-width="2.2"/>
+              <path id="hypCavLV" class="chamber" d="M168 138 Q210 122 244 132 Q226 226 168 246 Z" fill="#4c0519" stroke="#f43f5e" stroke-width="3"/>
+
+              <!-- Válvulas (Tricúspide, Pulmonar, Mitral, Aórtica) -->
+              <line id="hypValTricuspid" x1="94" y1="122" x2="124" y2="129" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
+              <line id="hypValPulmonic" x1="122" y1="124" x2="138" y2="113" stroke="#38bdf8" stroke-width="3" stroke-linecap="round"/>
+              <line id="hypValMitral" x1="194" y1="122" x2="224" y2="129" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
+              <line id="hypValAortic" x1="182" y1="126" x2="200" y2="114" stroke="#f43f5e" stroke-width="3" stroke-linecap="round"/>
+
+              <!-- Etiquetas anatómicas -->
+              <text x="99" y="97" fill="#e2e8f0" font-size="10" font-weight="700">AD</text>
+              <text x="206" y="95" fill="#e2e8f0" font-size="10" font-weight="700">AI</text>
+              <text x="108" y="188" fill="#e2e8f0" font-size="11" font-weight="700">VD</text>
+              <text x="198" y="188" fill="#e2e8f0" font-size="11" font-weight="700">VI</text>
+              <text x="82" y="138" fill="#fde047" font-size="7.5" font-weight="600">Tric</text>
+              <text x="132" y="110" fill="#7dd3fc" font-size="7.5" font-weight="600">Pulm</text>
+              <text x="218" y="138" fill="#fde047" font-size="7.5" font-weight="600">Mit</text>
+              <text x="192" y="110" fill="#fda4af" font-size="7.5" font-weight="600">Ao</text>
+            </svg>
+          </div>
+
+          <div id="hypFeedback" class="text-xs bg-slate-950/90 border border-slate-800 rounded-xl p-3 text-slate-300 leading-relaxed">
+            Selecciona una cavidad (AD, AI, VD, VI) o una valvulopatía para analizar sus cambios en el ECG y la hemodinamia.
+          </div>
+        </div>
+
+        <!-- Columna Derecha: ECG 12 Derivaciones + Mini-Juego de Hipertrofias y Válvulas -->
+        <div class="lg:col-span-7 space-y-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-sm font-semibold text-white">ECG de 12 Derivaciones — Cambios por Hipertrofia y Valvulopatía</h3>
+              <span class="text-[11px] text-emerald-400 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> LIVE</span>
+            </div>
+            <div id="hyp12LeadWrap" class="ecg-grid-dark rounded-xl border border-slate-800 p-2">
+              <canvas id="hyp12LeadCanvas" class="w-full h-72 block"></canvas>
+            </div>
+          </div>
+
+          <!-- Mini-juego interactivo de Hipertrofias y Válvulas -->
+          <div class="bg-slate-900 border border-emerald-500/30 rounded-2xl p-4 space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h3 class="text-sm font-bold text-emerald-300">🎮 Juego: Hipertrofias de 4 Cavidades &amp; Válvulas</h3>
+                <p id="hypGameClue" class="text-xs text-slate-300 mt-0.5">Pulsa "Nuevo reto" para identificar la cavidad o válvula afectada por su patrón en el ECG y la hemodinamia.</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span id="hypGameScore" class="mono text-xs bg-slate-800 px-2.5 py-1 rounded-lg text-emerald-400">0 pts · Racha 0</span>
+                <button id="hypGameStartBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition">Nuevo reto</button>
+              </div>
+            </div>
+            <div id="hypGameOptions" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+            <div id="hypGameResult" class="hidden text-xs p-2.5 rounded-xl"></div>
+          </div>
         </div>
       </div>
     </section>
@@ -1271,32 +1387,26 @@ ni la recomendación de un profesional de la salud.</div>
         const qtShift = Math.max(-0.04, Math.min(0.06, (36.8 - temp) * 0.008));
         v += gauss(dt, 0.22 + qtShift, tSigma, tAmp);
       }
-      const hfMode = cfg.hfMode || state.hfMode || null;
-      if (hfMode && hasQRS) {
-        if (hfMode === 'left_hf' || hfMode === 'aortic_sten') {
+      const hypChamber = cfg.hypChamber ?? state.hypChamber ?? null;
+      const hypValve = cfg.hypValve ?? state.hypValve ?? 'none';
+      const hypSev = ((cfg.hypSeverity ?? state.hypSeverity ?? 80) / 100);
+      if (hypChamber && hypSev > 0) {
+        if (hypChamber === 'RA' || hypValve === 'tricuspid_reg') {
+          if (['II', 'III', 'aVF'].includes(effLead)) v += gauss(dt, -0.16 - prOffset, 0.020, 0.14 * hypSev);
+        }
+        if (hypChamber === 'LA' || hypValve === 'mitral_sten' || hypValve === 'mitral_reg') {
+          if (effLead === 'II') v += gauss(dt, -0.18 - prOffset, 0.022, 0.10 * hypSev) + gauss(dt, -0.13 - prOffset, 0.022, 0.10 * hypSev);
+          if (effLead === 'V1') v += gauss(dt, -0.15 - prOffset, 0.026, -0.13 * hypSev);
+        }
+        if (hasQRS && (hypChamber === 'RV' || hypValve === 'pulmonic_sten')) {
+          if (effLead === 'V1' || effLead === 'V2') v += gauss(dt, 0, 0.014, 0.45 * hypSev) + gauss(dt, 0.12, 0.045, -0.16 * hypSev);
+          if (effLead === 'V5' || effLead === 'V6') v += gauss(dt, 0.024 * qrsScale, 0.012, -0.35 * hypSev);
+        }
+        if (hasQRS && (hypChamber === 'LV' || hypValve === 'aortic_sten' || hypValve === 'aortic_reg')) {
           if (effLead === 'V5' || effLead === 'V6' || effLead === 'I' || effLead === 'aVL') {
-            v += gauss(dt, 0, 0.014, 0.35) + gauss(dt, 0.14, 0.045, -0.18);
+            v += gauss(dt, 0, 0.014, 0.45 * hypSev) + gauss(dt, 0.13, 0.045, -0.18 * hypSev);
           }
-          if (effLead === 'II' || effLead === 'III' || effLead === 'aVF') {
-            v += gauss(dt, -0.16 - prOffset, 0.028, 0.06); // P mitrale sutil
-          }
-        }
-        if (hfMode === 'right_hf') {
-          if (effLead === 'V1' || effLead === 'V2') {
-            v += gauss(dt, 0, 0.014, 0.42) + gauss(dt, 0.13, 0.045, -0.16);
-          }
-          if (effLead === 'II' || effLead === 'III' || effLead === 'aVF') {
-            v += gauss(dt, -0.16 - prOffset, 0.022, 0.14); // P pulmonale
-          }
-        }
-        if (hfMode === 'mitral_sten') {
-          // Onda P ancha / mellada (P mitrale) en DII
-          if (effLead === 'II') v += gauss(dt, -0.18 - prOffset, 0.022, 0.11) + gauss(dt, -0.13 - prOffset, 0.022, 0.11);
-          if (effLead === 'V1') v += gauss(dt, -0.15 - prOffset, 0.026, -0.14);
-        }
-        if (hfMode === 'biventricular') {
-          if (effLead === 'V5' || effLead === 'V6') v += gauss(dt, 0, 0.015, 0.25);
-          if (effLead === 'V1') v += gauss(dt, 0, 0.015, 0.22);
+          if (effLead === 'V1' || effLead === 'V2') v += gauss(dt, 0.024 * qrsScale, 0.012, -0.45 * hypSev);
         }
       }
       return v * signFlip;
@@ -1421,7 +1531,8 @@ ni la recomendación de un profesional de la salud.</div>
         simTime += dt; updateHeartAnimation(simTime); drawLiveMonitor();
         if (!document.getElementById('tab-electrodes').classList.contains('hidden')) drawAnimated12Lead('elec12LeadCanvas', { rhythm: 'normal', usePinPhysics: true });
         if (!document.getElementById('tab-coronary').classList.contains('hidden')) drawAnimated12Lead('cor12LeadCanvas', { rhythm: 'normal', artery: state.artery, stenosis: state.stenosis, scaPhase: state.scaPhase, scaPreset: state.scaPreset });
-        if (!document.getElementById('tab-hf').classList.contains('hidden')) drawAnimated12Lead('hf12LeadCanvas', { rhythm: 'normal', hfMode: state.hfMode });
+        if (!document.getElementById('tab-hypertrophy').classList.contains('hidden')) drawAnimated12Lead('hyp12LeadCanvas', { rhythm: 'normal', hypChamber: state.hypChamber, hypValve: state.hypValve, hypSeverity: state.hypSeverity });
+      }
       }
       requestAnimationFrame(animationLoop);
     }
@@ -1967,69 +2078,121 @@ ni la recomendación de un profesional de la salud.</div>
       if (account) renderAccountPanels();
       renderRhythmButtons(); renderLearnModules();
     }
-    state.hfMode = null;
-    
-    const HF_SCENARIOS = {
-      left_hf: {
-        title: 'IC Izquierda (Congestión Pulmonar / Bajo Gasto)',
-        tag: 'IC Izquierda · Sobrecarga VI',
-        patho: 'Falla del VI o aumento de poscarga/precarga → elevación de presión en AI y venas pulmonares (disnea, ortopnea, crepitantes) y caída del gasto anterógrado.',
-        ecg: 'Signos frecuentes: sobrecarga de VI (R alta en V5–V6 con repolarización secundaria), crecimiento auricular izquierdo (P mitrale en DII / fase negativa amplia en V1) o taquicardia sinusal compensadora.',
-        lvScale: 1.08, laScale: 1.14, rvScale: 1.0, raScale: 1.0, aoColor: '#fb7185', paColor: '#38bdf8'
+    state.hypChamber = null;
+    state.hypValve = 'none';
+    state.hypSeverity = 80;
+    const HYP_CHAMBER_INFO = {
+      RA: {
+        name: 'Hipertrofia Auricular Derecha (HAD)',
+        desc: 'Onda P picuda y alta (≥2.5 mm en DII, DIII, aVF; "P pulmonale"). Se asocia a sobrecarga derecha/tricuspídea o pulmonar.'
       },
-      right_hf: {
-        title: 'IC Derecha (Congestión Venosa Sistémica)',
-        tag: 'IC Derecha · Sobrecarga VD',
-        patho: 'Falla del VD (p. ej. cor pulmonale o secundaria a IC izquierda) → congestión retrógrada hacia AD, VCS y VCI (ingurgitación yugular, hepatomegalia, edemas periféricos).',
-        ecg: 'Signos frecuentes: desviación derecha del eje, R prominente en V1 con S profunda en V5–V6 (HVD) y onda P picuda/alta en derivaciones inferiores (P pulmonale).',
-        lvScale: 1.0, laScale: 1.0, rvScale: 1.12, raScale: 1.16, aoColor: '#f43f5e', paColor: '#60a5fa'
+      LA: {
+        name: 'Hipertrofia Auricular Izquierda (HAI)',
+        desc: 'Onda P ancha (≥120 ms) y mellada en DII ("P mitrale") con fase negativa terminal marcada en V1. Frecuente en valvulopatía mitral o HTA.'
       },
-      biventricular: {
-        title: 'IC Biventricular',
-        tag: 'Biventricular · Congestión Mixta',
-        patho: 'Compromiso simultáneo de cavidades izquierdas y derechas → disnea pulmonar más ingurgitación yugular y edemas.',
-        ecg: 'Combinación de cambios de sobrecarga auricular y ventricular, trastornos de conducción intraventricular o arritmias.',
-        lvScale: 1.08, laScale: 1.12, rvScale: 1.10, raScale: 1.14, aoColor: '#fb7185', paColor: '#60a5fa'
+      RV: {
+        name: 'Hipertrofia Ventricular Derecha (HVD)',
+        desc: 'R alta en V1 (R/S > 1), S profunda en V5–V6, desviación derecha del eje y repolarización asimétrica (ST/T opuestos) en V1–V3.'
       },
-      mitral_sten: {
-        title: 'Estenosis Mitral (Obstrucción AI → VI)',
-        tag: 'Valvulopatía · Válvula Mitral',
-        patho: 'Apertura restringida de la válvula mitral → aumento de presión y dilatación de la AI, hipertensión venocapilar pulmonar y predisposición a FA.',
-        ecg: 'Onda P ancha (≥120 ms) y bifásica/mellada en DII (P mitrale), componente negativo prominente de P en V1 y posible crecimiento del VD tardío.',
-        lvScale: 0.96, laScale: 1.22, rvScale: 1.06, raScale: 1.05, aoColor: '#f43f5e', paColor: '#38bdf8'
-      },
-      aortic_sten: {
-        title: 'Estenosis Aórtica Severa (Obstrucción VI → Ao)',
-        tag: 'Valvulopatía · Válvula Aórtica',
-        patho: 'Obstrucción al tracto de salida del VI → sobrecarga crónica de presión con hipertrofia concéntrica del VI, angina, síncope y disnea.',
-        ecg: 'Voltajes altos de QRS en precordiales izquierdas (V5–V6) y/o precordiales derechas (V1–V2), con infradesnivel asimétrico del ST e inversión de T ("strain").',
-        lvScale: 1.14, laScale: 1.08, rvScale: 1.0, raScale: 1.0, aoColor: '#f59e0b', paColor: '#38bdf8'
+      LV: {
+        name: 'Hipertrofia Ventricular Izquierda (HVI)',
+        desc: 'Voltajes altos de QRS en precordiales izquierdas (V5–V6) y/o S profunda en V1–V2, con patrón de sobrecarga ("strain" con ST descendente e inversión de T) en V5–V6.'
       }
     };
-    function renderHfView() {
-      const sc = HF_SCENARIOS[state.hfMode];
-      const ra = document.getElementById('hfRA'), la = document.getElementById('hfLA'), rv = document.getElementById('hfRV'), lv = document.getElementById('hfLV');
-      const ao = document.getElementById('vesselAo'), pa = document.getElementById('vesselPA');
-      if (!sc) {
-        document.getElementById('hfSubtitle').textContent = 'Estado basal — selecciona una patología';
-        document.getElementById('hfEcgTag').textContent = 'Basal';
-        document.getElementById('hfClinicalBox').innerHTML = '<p><strong class="text-white">Fisiopatología:</strong> Selecciona un escenario para comparar la congestión y el flujo valvular.</p>';
-        document.getElementById('hfEcgPearls').textContent = 'Sin sobrecarga hemodinámica aguda seleccionada.';
-        [ra, la, rv, lv].forEach(el => { if (el) el.style.transform = 'scale(1)'; });
-        if (ao) ao.setAttribute('fill', '#f43f5e');
-        if (pa) pa.setAttribute('fill', '#38bdf8');
-        return;
+    function updateHypertrophyView() {
+      const sev = state.hypSeverity / 100;
+      const scaleGrow = 1 + 0.16 * sev;
+      const ra = document.getElementById('hypCavRA'), la = document.getElementById('hypCavLA');
+      const rv = document.getElementById('hypCavRV'), lv = document.getElementById('hypCavLV');
+      [ra, la, rv, lv].forEach(el => {
+        if (!el) return;
+        el.style.transform = 'scale(1)';
+        el.setAttribute('stroke-width', '2');
+      });
+      if (state.hypChamber === 'RA' && ra) { ra.style.transform = `scale(${scaleGrow})`; ra.setAttribute('stroke-width', '3.5'); }
+      if (state.hypChamber === 'LA' && la) { la.style.transform = `scale(${scaleGrow})`; la.setAttribute('stroke-width', '3.5'); }
+      if (state.hypChamber === 'RV' && rv) { rv.style.transform = `scale(${scaleGrow})`; rv.setAttribute('stroke-width', '3.5'); }
+      if (state.hypChamber === 'LV' && lv) { lv.style.transform = `scale(${scaleGrow})`; lv.setAttribute('stroke-width', '4'); }
+      ['hypValTricuspid', 'hypValPulmonic', 'hypValMitral', 'hypValAortic'].forEach(id => {
+        const vEl = document.getElementById(id);
+        if (vEl) { vEl.setAttribute('stroke-width', '3'); vEl.setAttribute('stroke-dasharray', ''); }
+      });
+      const valveMap = {
+        tricuspid_reg: 'hypValTricuspid',
+        pulmonic_sten: 'hypValPulmonic',
+        mitral_sten: 'hypValMitral',
+        mitral_reg: 'hypValMitral',
+        aortic_sten: 'hypValAortic',
+        aortic_reg: 'hypValAortic'
+      };
+      if (valveMap[state.hypValve]) {
+        const targetV = document.getElementById(valveMap[state.hypValve]);
+        if (targetV) { targetV.setAttribute('stroke-width', '5'); targetV.setAttribute('stroke-dasharray', '3 2'); }
       }
-      document.getElementById('hfSubtitle').textContent = sc.title;
-      document.getElementById('hfEcgTag').textContent = sc.tag;
-      document.getElementById('hfClinicalBox').innerHTML = `<p><strong class="text-white">Fisiopatología:</strong> ${sc.patho}</p>`;
-      document.getElementById('hfEcgPearls').textContent = sc.ecg;
-      if (ra) ra.style.transform = `scale(${sc.raScale})`;
-      if (la) la.style.transform = `scale(${sc.laScale})`;
-      if (rv) rv.style.transform = `scale(${sc.rvScale})`;
-      if (lv) lv.style.transform = `scale(${sc.lvScale})`;
-      if (ao) ao.setAttribute('fill', sc.aoColor);
-      if (pa) pa.setAttribute('fill', sc.paColor);
+      const info = state.hypChamber ? HYP_CHAMBER_INFO[state.hypChamber] : null;
+      const valveName = document.getElementById('hypValveSelect')?.selectedOptions?.[0]?.text || 'Ninguna';
+      document.getElementById('hypSelectedLabel').textContent = info
+        ? `${info.name} (${state.hypSeverity}%) · Válvula: ${valveName}`
+        : `Válvula: ${valveName} (${state.hypSeverity}%)`;
+      document.getElementById('hypFeedback').innerHTML = info
+        ? `<strong class="text-white">${info.name}:</strong> ${info.desc} <span class="text-amber-300">Alteración valvular: ${valveName}.</span>`
+        : `Modo actual — <span class="text-amber-300">Válvula: ${valveName}</span>. Elige AD, AI, VD o VI para ver su impacto en las 12 derivaciones.`;
+    }
+    const HYP_GAME_CHALLENGES = [
+      {
+        clue: 'Onda P alta y picuda (≥2.5 mm) en derivaciones inferiores (DII, DIII, aVF) con sobrecarga del compartimento derecho.',
+        chamber: 'RA', valve: 'tricuspid_reg',
+        answer: 'Hipertrofia Auricular Derecha (HAD) + Insuficiencia Tricuspídea',
+        options: ['Hipertrofia Auricular Derecha (HAD) + Insuficiencia Tricuspídea', 'Hipertrofia Auricular Izquierda (HAI) + Estenosis Mitral', 'Hipertrofia Ventricular Izquierda (HVI) + Estenosis Aórtica', 'Hipertrofia Ventricular Derecha (HVD) + Estenosis Pulmonar']
+      },
+      {
+        clue: 'Onda P ancha/mellada en DII con deflexión negativa marcada en V1 y compromiso de la válvula mitral.',
+        chamber: 'LA', valve: 'mitral_sten',
+        answer: 'Hipertrofia Auricular Izquierda (HAI) + Estenosis Mitral',
+        options: ['Hipertrofia Auricular Izquierda (HAI) + Estenosis Mitral', 'Hipertrofia Auricular Derecha (HAD) + Insuficiencia Tricuspídea', 'Hipertrofia Ventricular Derecha (HVD)', 'Hipertrofia Ventricular Izquierda (HVI)']
+      },
+      {
+        clue: 'R dominante en V1–V2 con repolarización opuesta y obstrucción en la salida del ventrículo derecho.',
+        chamber: 'RV', valve: 'pulmonic_sten',
+        answer: 'Hipertrofia Ventricular Derecha (HVD) + Estenosis Pulmonar',
+        options: ['Hipertrofia Ventricular Derecha (HVD) + Estenosis Pulmonar', 'Hipertrofia Ventricular Izquierda (HVI) + Estenosis Aórtica', 'Hipertrofia Auricular Izquierda (HAI)', 'Hipertrofia Auricular Derecha (HAD)']
+      },
+      {
+        clue: 'Voltajes altos en V5–V6 con sobrecarga ("strain") y sobrecarga de presión por obstrucción en la salida del VI.',
+        chamber: 'LV', valve: 'aortic_sten',
+        answer: 'Hipertrofia Ventricular Izquierda (HVI) + Estenosis Aórtica',
+        options: ['Hipertrofia Ventricular Izquierda (HVI) + Estenosis Aórtica', 'Hipertrofia Ventricular Derecha (HVD) + Estenosis Pulmonar', 'Hipertrofia Auricular Derecha (HAD)', 'Hipertrofia Auricular Izquierda (HAI) + Estenosis Mitral']
+      }
+    ];
+    let hypGamePts = 0, hypGameStreak = 0, hypGameCurrent = null;
+    function startHypGame() {
+      hypGameCurrent = HYP_GAME_CHALLENGES[Math.floor(Math.random() * HYP_GAME_CHALLENGES.length)];
+      state.hypChamber = hypGameCurrent.chamber;
+      state.hypValve = hypGameCurrent.valve;
+      state.hypSeverity = 85;
+      document.getElementById('hypSeveritySlider').value = 85;
+      document.getElementById('hypSeverityVal').textContent = '85%';
+      document.getElementById('hypValveSelect').value = hypGameCurrent.valve;
+      updateHypertrophyView();
+      document.getElementById('hypGameClue').textContent = hypGameCurrent.clue;
+      document.getElementById('hypGameResult').classList.add('hidden');
+      const optsEl = document.getElementById('hypGameOptions'); optsEl.innerHTML = '';
+      [...hypGameCurrent.options].sort(() => Math.random() - 0.5).forEach(opt => {
+        const b = document.createElement('button');
+        b.className = 'text-left px-3 py-2 rounded-xl text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition';
+        b.textContent = opt;
+        b.addEventListener('click', () => {
+          const ok = opt === hypGameCurrent.answer;
+          if (ok) { hypGamePts += 15; hypGameStreak += 1; } else { hypGameStreak = 0; }
+          document.getElementById('hypGameScore').textContent = `${hypGamePts} pts · Racha ${hypGameStreak}`;
+          const res = document.getElementById('hypGameResult'); res.classList.remove('hidden');
+          res.className = ok
+            ? 'text-xs p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-300'
+            : 'text-xs p-2.5 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300';
+          res.textContent = ok ? `✅ ¡Muy bien! Es ${hypGameCurrent.answer}. (+15 pts)` : `❌ Era: ${hypGameCurrent.answer}.`;
+        });
+        optsEl.appendChild(b);
+      });
     }
     window.addEventListener('DOMContentLoaded', () => {
       loadAccount();
