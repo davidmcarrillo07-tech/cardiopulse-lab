@@ -2378,7 +2378,7 @@ ni la recomendación de un profesional de la salud.</div>
         localStorage.removeItem(ACCOUNT_STORAGE_KEY); loadAccount(); renderRhythmButtons(); renderElectrodes(); renderAccountPanels();
       });
       document.querySelectorAll('.hf-mode-btn').forEach(btn => {
-        btn.addEventListener('click', () => { state.hfMode = btn.dataset.hfMode; renderHfView(); });
+        btn.addEventListener('click', () => { state.hfMode = btn.dataset.hfMode; updateHypertrophyView(); });
       });
       const hfResetBtn = document.getElementById('hfResetBtn');
       if (hfResetBtn) hfResetBtn.addEventListener('click', () => { state.hfMode = null; renderHfView(); });
