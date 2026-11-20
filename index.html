@@ -97,7 +97,6 @@
         <button data-tab="electrodes" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800 transition whitespace-nowrap" data-i18n="nav_electrodes">Electrodos</button>
         <button data-tab="coronary" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800 transition whitespace-nowrap" data-i18n="nav_coronary">Coronarias & SCA</button>
         <button data-tab="hypertrophy" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800 transition whitespace-nowrap">Hipertrofias &amp; Válvulas</button>
-        <button data-tab="hf" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800 transition whitespace-nowrap">IC &amp; Válvulas</button>
         <button data-tab="learn" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800 transition whitespace-nowrap" data-i18n="nav_learn">Bloques</button>
         <button data-tab="calc" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800 transition whitespace-nowrap" data-i18n="nav_calc">Calculadoras</button>
       </nav>
@@ -404,98 +403,6 @@
           <div id="cor12LeadWrap" class="ecg-grid-dark rounded-xl border border-slate-800 p-2">
             <canvas id="cor12LeadCanvas" class="w-full h-96 block"></canvas>
           </div>
-        </div>
-      </div>
-    </section>
-<!-- ==================== TAB 3B: INSUFICIENCIA CARDÍACA & VÁLVULAS ==================== -->
-    <section id="tab-hf" class="tab-panel hidden space-y-4">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-        <!-- Diagrama Anatómico: Cavidades, Válvulas y Grandes Vasos -->
-        <div class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
-          <div class="flex items-center justify-between gap-2">
-            <div>
-              <h2 class="text-sm font-semibold text-white">Hemodinamia, Válvulas y Grandes Vasos</h2>
-              <p id="hfSubtitle" class="text-xs text-sky-400 font-medium">Selecciona un escenario de Insuficiencia Cardíaca</p>
-            </div>
-            <button id="hfResetBtn" class="text-xs text-emerald-400 hover:underline">Normal</button>
-          </div>
-
-          <div class="flex flex-wrap gap-1.5 text-xs">
-            <button data-hf-mode="left_hf" class="hf-mode-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-sky-900/50 border border-slate-700 text-slate-200 font-medium">IC Izquierda</button>
-            <button data-hf-mode="right_hf" class="hf-mode-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-rose-900/50 border border-slate-700 text-slate-200 font-medium">IC Derecha</button>
-            <button data-hf-mode="biventricular" class="hf-mode-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-purple-900/50 border border-slate-700 text-slate-200 font-medium">Biventricular</button>
-            <button data-hf-mode="mitral_sten" class="hf-mode-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-amber-900/50 border border-slate-700 text-slate-200 font-medium">Estenosis Mitral</button>
-            <button data-hf-mode="aortic_sten" class="hf-mode-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-amber-900/50 border border-slate-700 text-slate-200 font-medium">Estenosis Aórtica</button>
-          </div>
-
-          <div class="bg-slate-950/90 rounded-xl border border-slate-800 p-2 flex justify-center">
-            <svg id="hfHeartSvg" viewBox="0 0 340 310" class="w-full max-w-sm h-72">
-              <!-- Grandes vasos -->
-              <!-- Vena Cava Superior e Inferior -->
-              <rect x="86" y="15" width="16" height="55" rx="4" fill="#2563eb" opacity="0.75"/>
-              <rect x="86" y="245" width="16" height="50" rx="4" fill="#2563eb" opacity="0.75"/>
-              <text x="52" y="35" fill="#93c5fd" font-size="9" font-weight="600">VCS</text>
-              <text x="52" y="280" fill="#93c5fd" font-size="9" font-weight="600">VCI</text>
-
-              <!-- Arteria Pulmonar (sale de VD hacia izquierda anatómica del esquema) -->
-              <path id="vesselPA" d="M132 135 Q125 75 72 65 L72 82 Q112 88 118 138 Z" fill="#38bdf8" opacity="0.7"/>
-              <text x="42" y="60" fill="#7dd3fc" font-size="9" font-weight="600">Art. Pulm</text>
-
-              <!-- Aorta (cayado y descendente) -->
-              <path id="vesselAo" d="M188 135 Q186 42 232 42 Q264 42 264 95 L264 290 L246 290 L246 98 Q246 60 228 60 Q204 60 206 135 Z" fill="#f43f5e" opacity="0.8"/>
-              <text x="268" y="80" fill="#fda4af" font-size="9" font-weight="600">Aorta</text>
-
-              <!-- Venas Pulmonares -->
-              <line x1="295" y1="88" x2="255" y2="92" stroke="#fb7185" stroke-width="6" stroke-linecap="round"/>
-              <line x1="295" y1="112" x2="255" y2="106" stroke="#fb7185" stroke-width="6" stroke-linecap="round"/>
-              <text x="275" y="128" fill="#fda4af" font-size="8.5" font-weight="600">VV. Pulm</text>
-
-              <!-- Cavidades -->
-              <ellipse id="hfRA" cx="105" cy="96" rx="30" ry="26" fill="#1e3a8a" stroke="#60a5fa" stroke-width="2"/>
-              <ellipse id="hfLA" cx="222" cy="96" rx="30" ry="26" fill="#4c1d24" stroke="#fb7185" stroke-width="2"/>
-              <path id="hfRV" d="M76 132 Q112 124 152 140 L150 242 Q96 220 76 132 Z" fill="#172554" stroke="#38bdf8" stroke-width="2.2"/>
-              <path id="hfLV" d="M168 140 Q212 124 248 134 Q230 232 168 252 Z" fill="#4c0519" stroke="#f43f5e" stroke-width="3"/>
-
-              <!-- Válvulas cardíacas -->
-              <!-- Tricúspide (entre RA y RV) -->
-              <line id="valveTricuspid" x1="94" y1="124" x2="124" y2="132" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
-              <text x="86" y="142" fill="#fde047" font-size="8" font-weight="700">Tric.</text>
-
-              <!-- Pulmonar (salida RV) -->
-              <line id="valvePulmonic" x1="122" y1="126" x2="138" y2="115" stroke="#38bdf8" stroke-width="3" stroke-linecap="round"/>
-              <text x="136" y="112" fill="#7dd3fc" font-size="8" font-weight="700">Pulm.</text>
-
-              <!-- Mitral (entre LA y LV) -->
-              <line id="valveMitral" x1="196" y1="124" x2="226" y2="132" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
-              <text x="218" y="142" fill="#fde047" font-size="8" font-weight="700">Mitral</text>
-
-              <!-- Aórtica (salida LV) -->
-              <line id="valveAortic" x1="184" y1="128" x2="202" y2="116" stroke="#f43f5e" stroke-width="3" stroke-linecap="round"/>
-              <text x="195" y="112" fill="#fda4af" font-size="8" font-weight="700">Ao.</text>
-
-              <!-- Etiquetas de cavidades -->
-              <text x="98" y="99" fill="#e2e8f0" font-size="10" font-weight="700">AD</text>
-              <text x="216" y="99" fill="#e2e8f0" font-size="10" font-weight="700">AI</text>
-              <text x="108" y="192" fill="#e2e8f0" font-size="11" font-weight="700">VD</text>
-              <text x="200" y="192" fill="#e2e8f0" font-size="11" font-weight="700">VI</text>
-            </svg>
-          </div>
-
-          <div id="hfClinicalBox" class="text-xs bg-slate-950/90 border border-slate-800 rounded-xl p-3 text-slate-300 space-y-1.5 leading-relaxed">
-            <p><strong class="text-white">Fisiopatología:</strong> Selecciona una condición para ver la congestión retrógrada, el gasto anterógrado y los hallazgos en el ECG.</p>
-          </div>
-        </div>
-
-        <!-- ECG de 12 derivaciones asociado -->
-        <div class="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
-          <div class="flex items-center justify-between">
-            <h3 class="text-sm font-semibold text-white">Correlación Electrocardiográfica (12 Derivaciones)</h3>
-            <span id="hfEcgTag" class="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-800 text-emerald-400">Basal</span>
-          </div>
-          <div id="hf12LeadWrap" class="ecg-grid-dark rounded-xl border border-slate-800 p-2">
-            <canvas id="hf12LeadCanvas" class="w-full h-96 block"></canvas>
-          </div>
-          <div id="hfEcgPearls" class="text-xs bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-slate-300 leading-relaxed"></div>
         </div>
       </div>
     </section>
@@ -2380,9 +2287,7 @@ ni la recomendación de un profesional de la salud.</div>
       document.querySelectorAll('.hf-mode-btn').forEach(btn => {
         btn.addEventListener('click', () => { state.hfMode = btn.dataset.hfMode; updateHypertrophyView(); });
       });
-      const hfResetBtn = document.getElementById('hfResetBtn');
-      if (hfResetBtn) hfResetBtn.addEventListener('click', () => { state.hfMode = null; renderHfView(); });
-
+      
       setupTorsoDrag();
       applyRhythmPreset('normal');
       applyLanguage(state.lang);
