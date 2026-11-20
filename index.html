@@ -96,6 +96,7 @@
         <button data-tab="sim" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-emerald-600 text-white transition whitespace-nowrap" data-i18n="nav_sim">Simulador</button>
         <button data-tab="electrodes" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800 transition whitespace-nowrap" data-i18n="nav_electrodes">Electrodos</button>
         <button data-tab="coronary" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800 transition whitespace-nowrap" data-i18n="nav_coronary">Coronarias & SCA</button>
+        <button data-tab="hf" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800 transition whitespace-nowrap">IC &amp; Válvulas</button>
         <button data-tab="learn" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800 transition whitespace-nowrap" data-i18n="nav_learn">Bloques</button>
         <button data-tab="calc" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800 transition whitespace-nowrap" data-i18n="nav_calc">Calculadoras</button>
       </nav>
@@ -405,7 +406,98 @@
         </div>
       </div>
     </section>
+<!-- ==================== TAB 3B: INSUFICIENCIA CARDÍACA & VÁLVULAS ==================== -->
+    <section id="tab-hf" class="tab-panel hidden space-y-4">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <!-- Diagrama Anatómico: Cavidades, Válvulas y Grandes Vasos -->
+        <div class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <h2 class="text-sm font-semibold text-white">Hemodinamia, Válvulas y Grandes Vasos</h2>
+              <p id="hfSubtitle" class="text-xs text-sky-400 font-medium">Selecciona un escenario de Insuficiencia Cardíaca</p>
+            </div>
+            <button id="hfResetBtn" class="text-xs text-emerald-400 hover:underline">Normal</button>
+          </div>
 
+          <div class="flex flex-wrap gap-1.5 text-xs">
+            <button data-hf-mode="left_hf" class="hf-mode-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-sky-900/50 border border-slate-700 text-slate-200 font-medium">IC Izquierda</button>
+            <button data-hf-mode="right_hf" class="hf-mode-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-rose-900/50 border border-slate-700 text-slate-200 font-medium">IC Derecha</button>
+            <button data-hf-mode="biventricular" class="hf-mode-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-purple-900/50 border border-slate-700 text-slate-200 font-medium">Biventricular</button>
+            <button data-hf-mode="mitral_sten" class="hf-mode-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-amber-900/50 border border-slate-700 text-slate-200 font-medium">Estenosis Mitral</button>
+            <button data-hf-mode="aortic_sten" class="hf-mode-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-amber-900/50 border border-slate-700 text-slate-200 font-medium">Estenosis Aórtica</button>
+          </div>
+
+          <div class="bg-slate-950/90 rounded-xl border border-slate-800 p-2 flex justify-center">
+            <svg id="hfHeartSvg" viewBox="0 0 340 310" class="w-full max-w-sm h-72">
+              <!-- Grandes vasos -->
+              <!-- Vena Cava Superior e Inferior -->
+              <rect x="86" y="15" width="16" height="55" rx="4" fill="#2563eb" opacity="0.75"/>
+              <rect x="86" y="245" width="16" height="50" rx="4" fill="#2563eb" opacity="0.75"/>
+              <text x="52" y="35" fill="#93c5fd" font-size="9" font-weight="600">VCS</text>
+              <text x="52" y="280" fill="#93c5fd" font-size="9" font-weight="600">VCI</text>
+
+              <!-- Arteria Pulmonar (sale de VD hacia izquierda anatómica del esquema) -->
+              <path id="vesselPA" d="M132 135 Q125 75 72 65 L72 82 Q112 88 118 138 Z" fill="#38bdf8" opacity="0.7"/>
+              <text x="42" y="60" fill="#7dd3fc" font-size="9" font-weight="600">Art. Pulm</text>
+
+              <!-- Aorta (cayado y descendente) -->
+              <path id="vesselAo" d="M188 135 Q186 42 232 42 Q264 42 264 95 L264 290 L246 290 L246 98 Q246 60 228 60 Q204 60 206 135 Z" fill="#f43f5e" opacity="0.8"/>
+              <text x="268" y="80" fill="#fda4af" font-size="9" font-weight="600">Aorta</text>
+
+              <!-- Venas Pulmonares -->
+              <line x1="295" y1="88" x2="255" y2="92" stroke="#fb7185" stroke-width="6" stroke-linecap="round"/>
+              <line x1="295" y1="112" x2="255" y2="106" stroke="#fb7185" stroke-width="6" stroke-linecap="round"/>
+              <text x="275" y="128" fill="#fda4af" font-size="8.5" font-weight="600">VV. Pulm</text>
+
+              <!-- Cavidades -->
+              <ellipse id="hfRA" cx="105" cy="96" rx="30" ry="26" fill="#1e3a8a" stroke="#60a5fa" stroke-width="2"/>
+              <ellipse id="hfLA" cx="222" cy="96" rx="30" ry="26" fill="#4c1d24" stroke="#fb7185" stroke-width="2"/>
+              <path id="hfRV" d="M76 132 Q112 124 152 140 L150 242 Q96 220 76 132 Z" fill="#172554" stroke="#38bdf8" stroke-width="2.2"/>
+              <path id="hfLV" d="M168 140 Q212 124 248 134 Q230 232 168 252 Z" fill="#4c0519" stroke="#f43f5e" stroke-width="3"/>
+
+              <!-- Válvulas cardíacas -->
+              <!-- Tricúspide (entre RA y RV) -->
+              <line id="valveTricuspid" x1="94" y1="124" x2="124" y2="132" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
+              <text x="86" y="142" fill="#fde047" font-size="8" font-weight="700">Tric.</text>
+
+              <!-- Pulmonar (salida RV) -->
+              <line id="valvePulmonic" x1="122" y1="126" x2="138" y2="115" stroke="#38bdf8" stroke-width="3" stroke-linecap="round"/>
+              <text x="136" y="112" fill="#7dd3fc" font-size="8" font-weight="700">Pulm.</text>
+
+              <!-- Mitral (entre LA y LV) -->
+              <line id="valveMitral" x1="196" y1="124" x2="226" y2="132" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
+              <text x="218" y="142" fill="#fde047" font-size="8" font-weight="700">Mitral</text>
+
+              <!-- Aórtica (salida LV) -->
+              <line id="valveAortic" x1="184" y1="128" x2="202" y2="116" stroke="#f43f5e" stroke-width="3" stroke-linecap="round"/>
+              <text x="195" y="112" fill="#fda4af" font-size="8" font-weight="700">Ao.</text>
+
+              <!-- Etiquetas de cavidades -->
+              <text x="98" y="99" fill="#e2e8f0" font-size="10" font-weight="700">AD</text>
+              <text x="216" y="99" fill="#e2e8f0" font-size="10" font-weight="700">AI</text>
+              <text x="108" y="192" fill="#e2e8f0" font-size="11" font-weight="700">VD</text>
+              <text x="200" y="192" fill="#e2e8f0" font-size="11" font-weight="700">VI</text>
+            </svg>
+          </div>
+
+          <div id="hfClinicalBox" class="text-xs bg-slate-950/90 border border-slate-800 rounded-xl p-3 text-slate-300 space-y-1.5 leading-relaxed">
+            <p><strong class="text-white">Fisiopatología:</strong> Selecciona una condición para ver la congestión retrógrada, el gasto anterógrado y los hallazgos en el ECG.</p>
+          </div>
+        </div>
+
+        <!-- ECG de 12 derivaciones asociado -->
+        <div class="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-semibold text-white">Correlación Electrocardiográfica (12 Derivaciones)</h3>
+            <span id="hfEcgTag" class="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-800 text-emerald-400">Basal</span>
+          </div>
+          <div id="hf12LeadWrap" class="ecg-grid-dark rounded-xl border border-slate-800 p-2">
+            <canvas id="hf12LeadCanvas" class="w-full h-96 block"></canvas>
+          </div>
+          <div id="hfEcgPearls" class="text-xs bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-slate-300 leading-relaxed"></div>
+        </div>
+      </div>
+    </section>
     <!-- ==================== TAB 4: BLOQUES DE APRENDIZAJE & DESAFÍO CLÍNICO ==================== -->
     <section id="tab-learn" class="tab-panel hidden space-y-4">
       <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-900 border border-slate-800 rounded-2xl p-3">
@@ -1179,6 +1271,34 @@ ni la recomendación de un profesional de la salud.</div>
         const qtShift = Math.max(-0.04, Math.min(0.06, (36.8 - temp) * 0.008));
         v += gauss(dt, 0.22 + qtShift, tSigma, tAmp);
       }
+      const hfMode = cfg.hfMode || state.hfMode || null;
+      if (hfMode && hasQRS) {
+        if (hfMode === 'left_hf' || hfMode === 'aortic_sten') {
+          if (effLead === 'V5' || effLead === 'V6' || effLead === 'I' || effLead === 'aVL') {
+            v += gauss(dt, 0, 0.014, 0.35) + gauss(dt, 0.14, 0.045, -0.18);
+          }
+          if (effLead === 'II' || effLead === 'III' || effLead === 'aVF') {
+            v += gauss(dt, -0.16 - prOffset, 0.028, 0.06); // P mitrale sutil
+          }
+        }
+        if (hfMode === 'right_hf') {
+          if (effLead === 'V1' || effLead === 'V2') {
+            v += gauss(dt, 0, 0.014, 0.42) + gauss(dt, 0.13, 0.045, -0.16);
+          }
+          if (effLead === 'II' || effLead === 'III' || effLead === 'aVF') {
+            v += gauss(dt, -0.16 - prOffset, 0.022, 0.14); // P pulmonale
+          }
+        }
+        if (hfMode === 'mitral_sten') {
+          // Onda P ancha / mellada (P mitrale) en DII
+          if (effLead === 'II') v += gauss(dt, -0.18 - prOffset, 0.022, 0.11) + gauss(dt, -0.13 - prOffset, 0.022, 0.11);
+          if (effLead === 'V1') v += gauss(dt, -0.15 - prOffset, 0.026, -0.14);
+        }
+        if (hfMode === 'biventricular') {
+          if (effLead === 'V5' || effLead === 'V6') v += gauss(dt, 0, 0.015, 0.25);
+          if (effLead === 'V1') v += gauss(dt, 0, 0.015, 0.22);
+        }
+      }
       return v * signFlip;
     }
 
@@ -1301,6 +1421,7 @@ ni la recomendación de un profesional de la salud.</div>
         simTime += dt; updateHeartAnimation(simTime); drawLiveMonitor();
         if (!document.getElementById('tab-electrodes').classList.contains('hidden')) drawAnimated12Lead('elec12LeadCanvas', { rhythm: 'normal', usePinPhysics: true });
         if (!document.getElementById('tab-coronary').classList.contains('hidden')) drawAnimated12Lead('cor12LeadCanvas', { rhythm: 'normal', artery: state.artery, stenosis: state.stenosis, scaPhase: state.scaPhase, scaPreset: state.scaPreset });
+        if (!document.getElementById('tab-hf').classList.contains('hidden')) drawAnimated12Lead('hf12LeadCanvas', { rhythm: 'normal', hfMode: state.hfMode });
       }
       requestAnimationFrame(animationLoop);
     }
@@ -1846,7 +1967,70 @@ ni la recomendación de un profesional de la salud.</div>
       if (account) renderAccountPanels();
       renderRhythmButtons(); renderLearnModules();
     }
-
+    state.hfMode = null;
+    
+    const HF_SCENARIOS = {
+      left_hf: {
+        title: 'IC Izquierda (Congestión Pulmonar / Bajo Gasto)',
+        tag: 'IC Izquierda · Sobrecarga VI',
+        patho: 'Falla del VI o aumento de poscarga/precarga → elevación de presión en AI y venas pulmonares (disnea, ortopnea, crepitantes) y caída del gasto anterógrado.',
+        ecg: 'Signos frecuentes: sobrecarga de VI (R alta en V5–V6 con repolarización secundaria), crecimiento auricular izquierdo (P mitrale en DII / fase negativa amplia en V1) o taquicardia sinusal compensadora.',
+        lvScale: 1.08, laScale: 1.14, rvScale: 1.0, raScale: 1.0, aoColor: '#fb7185', paColor: '#38bdf8'
+      },
+      right_hf: {
+        title: 'IC Derecha (Congestión Venosa Sistémica)',
+        tag: 'IC Derecha · Sobrecarga VD',
+        patho: 'Falla del VD (p. ej. cor pulmonale o secundaria a IC izquierda) → congestión retrógrada hacia AD, VCS y VCI (ingurgitación yugular, hepatomegalia, edemas periféricos).',
+        ecg: 'Signos frecuentes: desviación derecha del eje, R prominente en V1 con S profunda en V5–V6 (HVD) y onda P picuda/alta en derivaciones inferiores (P pulmonale).',
+        lvScale: 1.0, laScale: 1.0, rvScale: 1.12, raScale: 1.16, aoColor: '#f43f5e', paColor: '#60a5fa'
+      },
+      biventricular: {
+        title: 'IC Biventricular',
+        tag: 'Biventricular · Congestión Mixta',
+        patho: 'Compromiso simultáneo de cavidades izquierdas y derechas → disnea pulmonar más ingurgitación yugular y edemas.',
+        ecg: 'Combinación de cambios de sobrecarga auricular y ventricular, trastornos de conducción intraventricular o arritmias.',
+        lvScale: 1.08, laScale: 1.12, rvScale: 1.10, raScale: 1.14, aoColor: '#fb7185', paColor: '#60a5fa'
+      },
+      mitral_sten: {
+        title: 'Estenosis Mitral (Obstrucción AI → VI)',
+        tag: 'Valvulopatía · Válvula Mitral',
+        patho: 'Apertura restringida de la válvula mitral → aumento de presión y dilatación de la AI, hipertensión venocapilar pulmonar y predisposición a FA.',
+        ecg: 'Onda P ancha (≥120 ms) y bifásica/mellada en DII (P mitrale), componente negativo prominente de P en V1 y posible crecimiento del VD tardío.',
+        lvScale: 0.96, laScale: 1.22, rvScale: 1.06, raScale: 1.05, aoColor: '#f43f5e', paColor: '#38bdf8'
+      },
+      aortic_sten: {
+        title: 'Estenosis Aórtica Severa (Obstrucción VI → Ao)',
+        tag: 'Valvulopatía · Válvula Aórtica',
+        patho: 'Obstrucción al tracto de salida del VI → sobrecarga crónica de presión con hipertrofia concéntrica del VI, angina, síncope y disnea.',
+        ecg: 'Voltajes altos de QRS en precordiales izquierdas (V5–V6) y/o precordiales derechas (V1–V2), con infradesnivel asimétrico del ST e inversión de T ("strain").',
+        lvScale: 1.14, laScale: 1.08, rvScale: 1.0, raScale: 1.0, aoColor: '#f59e0b', paColor: '#38bdf8'
+      }
+    };
+    function renderHfView() {
+      const sc = HF_SCENARIOS[state.hfMode];
+      const ra = document.getElementById('hfRA'), la = document.getElementById('hfLA'), rv = document.getElementById('hfRV'), lv = document.getElementById('hfLV');
+      const ao = document.getElementById('vesselAo'), pa = document.getElementById('vesselPA');
+      if (!sc) {
+        document.getElementById('hfSubtitle').textContent = 'Estado basal — selecciona una patología';
+        document.getElementById('hfEcgTag').textContent = 'Basal';
+        document.getElementById('hfClinicalBox').innerHTML = '<p><strong class="text-white">Fisiopatología:</strong> Selecciona un escenario para comparar la congestión y el flujo valvular.</p>';
+        document.getElementById('hfEcgPearls').textContent = 'Sin sobrecarga hemodinámica aguda seleccionada.';
+        [ra, la, rv, lv].forEach(el => { if (el) el.style.transform = 'scale(1)'; });
+        if (ao) ao.setAttribute('fill', '#f43f5e');
+        if (pa) pa.setAttribute('fill', '#38bdf8');
+        return;
+      }
+      document.getElementById('hfSubtitle').textContent = sc.title;
+      document.getElementById('hfEcgTag').textContent = sc.tag;
+      document.getElementById('hfClinicalBox').innerHTML = `<p><strong class="text-white">Fisiopatología:</strong> ${sc.patho}</p>`;
+      document.getElementById('hfEcgPearls').textContent = sc.ecg;
+      if (ra) ra.style.transform = `scale(${sc.raScale})`;
+      if (la) la.style.transform = `scale(${sc.laScale})`;
+      if (rv) rv.style.transform = `scale(${sc.rvScale})`;
+      if (lv) lv.style.transform = `scale(${sc.lvScale})`;
+      if (ao) ao.setAttribute('fill', sc.aoColor);
+      if (pa) pa.setAttribute('fill', sc.paColor);
+    }
     window.addEventListener('DOMContentLoaded', () => {
       loadAccount();
       state.lang = account.profile.lang || 'es';
@@ -2004,6 +2188,11 @@ ni la recomendación de un profesional de la salud.</div>
         if (!confirm(t('acc_reset_confirm'))) return;
         localStorage.removeItem(ACCOUNT_STORAGE_KEY); loadAccount(); renderRhythmButtons(); renderElectrodes(); renderAccountPanels();
       });
+      document.querySelectorAll('.hf-mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => { state.hfMode = btn.dataset.hfMode; renderHfView(); });
+      });
+      const hfResetBtn = document.getElementById('hfResetBtn');
+      if (hfResetBtn) hfResetBtn.addEventListener('click', () => { state.hfMode = null; renderHfView(); });
 
       setupTorsoDrag();
       applyRhythmPreset('normal');
