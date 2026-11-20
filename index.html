@@ -2150,7 +2150,7 @@ ni la recomendación de un profesional de la salud.</div>
 
       document.getElementById('paperToggleBtn').addEventListener('click', () => {
         state.paperMode = !state.paperMode;
-        ['monitorCanvasWrap', 'elec12LeadWrap', 'cor12LeadWrap'].forEach(id => {
+        ['monitorCanvasWrap', 'elec12LeadWrap', 'cor12LeadWrap', 'hyp12LeadWrap'].forEach(id => {
           const el = document.getElementById(id); el.classList.toggle('ecg-grid-dark', !state.paperMode); el.classList.toggle('ecg-grid-paper', state.paperMode);
         });
         applyLanguage(state.lang);
@@ -2286,6 +2286,46 @@ ni la recomendación de un profesional de la salud.</div>
       });
       document.querySelectorAll('.hf-mode-btn').forEach(btn => {
         btn.addEventListener('click', () => { state.hfMode = btn.dataset.hfMode; updateHypertrophyView(); });
+      });
+      document.querySelectorAll('.hyp-chamber-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const ch = btn.dataset.hypChamber;
+          state.hypChamber = state.hypChamber === ch ? null : ch;
+          updateHypertrophyView();
+        });
+      });
+      document.getElementById('hypValveSelect')?.addEventListener('change', e => {
+        state.hypValve = e.target.value;
+        updateHypertrophyView();
+      });
+      document.getElementById('hypSeveritySlider')?.addEventListener('input', e => {
+        state.hypSeverity = Number(e.target.value);
+        const valEl = document.getElementById('hypSeverityVal');
+        if (valEl) valEl.textContent = `${state.hypSeverity}%`;
+        updateHypertrophyView();
+      });
+      document.getElementById('hypClearBtn')?.addEventListener('click', () => {
+        state.hypChamber = null;
+        state.hypValve = 'none';
+        state.hypSeverity = 80;
+        const valveSel = document.getElementById('hypValveSelect');
+        const sevSlider = document.getElementById('hypSeveritySlider');
+        const sevVal = document.getElementById('hypSeverityVal');
+        if (valveSel) valveSel.value = 'none';
+        if (sevSlider) sevSlider.value = '80';
+        if (sevVal) sevVal.textContent = '80%';
+        updateHypertrophyView();
+      });
+      document.getElementById('hypGameStartBtn')?.addEventListener('click', () => {
+        const chambers = ['RA', 'LA', 'RV', 'LV'];
+        const target = chambers[Math.floor(Math.random() * chambers.length)];
+        state.hypChamber = null;
+        state.hypValve = 'none';
+        updateHypertrophyView();
+        const fb = document.getElementById('hypFeedback');
+        if (fb) {
+          fb.innerHTML = `<strong class="text-emerald-300">Reto activo:</strong> Identifica la sobrecarga asociada a <strong class="text-white">${target}</strong> y selecciona la cavidad en el panel.`;
+        }
       });
       
       setupTorsoDrag();
