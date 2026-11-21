@@ -96,7 +96,7 @@
         <button data-tab="sim" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-emerald-600 text-white transition whitespace-nowrap" data-i18n="nav_sim">Simulador</button>
         <button data-tab="electrodes" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800 transition whitespace-nowrap" data-i18n="nav_electrodes">Electrodos</button>
         <button data-tab="coronary" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800 transition whitespace-nowrap" data-i18n="nav_coronary">Coronarias & SCA</button>
-        <button data-tab="hypertrophy" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800 transition whitespace-nowrap">Hipertrofias &amp; Válvulas</button>
+        <button data-tab="hypertrophy" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800 transition whitespace-nowrap" data-i18n="nav_hypertrophy">Hipertrofias &amp; Válvulas</button>
         <button data-tab="learn" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800 transition whitespace-nowrap" data-i18n="nav_learn">Bloques</button>
         <button data-tab="calc" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800 transition whitespace-nowrap" data-i18n="nav_calc">Calculadoras</button>
       </nav>
@@ -413,8 +413,9 @@
         <div class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
           <div class="flex items-center justify-between gap-2">
             <div>
-              <h2 class="text-sm font-semibold text-white">Hipertrofia de 4 Cavidades &amp; Válvulas</h2>
-              <p id="hypSelectedLabel" class="text-xs text-emerald-400 font-medium">Sin hipertrofia activa (Basal)</p>
+              <h2 data-i18n="hyp_title" class="text-sm font-semibold text-white">Hipertrofia de 4 Cavidades &amp; Válvulas</h2>
+              <p id="hypSelectedLabel" data-i18n="hyp_none_active" class="text-xs text-emerald-400 font-medium">Sin hipertrofia activa (Basal)</p>
+              <button id="hypClearBtn" data-i18n="hyp_clear" class="text-xs text-emerald-400 hover:underline">Limpiar</button>
             </div>
             <button id="hypClearBtn" class="text-xs text-emerald-400 hover:underline">Limpiar</button>
           </div>
@@ -423,30 +424,31 @@
           <div>
             <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Cavidades (Hipertrofia / Sobrecarga):</p>
             <div class="grid grid-cols-2 gap-1.5 text-xs">
-              <button data-hyp-chamber="RA" class="hyp-chamber-btn px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-medium text-left">1. Aurícula Derecha (RA)</button>
-              <button data-hyp-chamber="LA" class="hyp-chamber-btn px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-medium text-left">2. Aurícula Izquierda (LA)</button>
-              <button data-hyp-chamber="RV" class="hyp-chamber-btn px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-medium text-left">3. Ventrículo Derecho (RV)</button>
-              <button data-hyp-chamber="LV" class="hyp-chamber-btn px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-medium text-left">4. Ventrículo Izquierdo (LV)</button>
+              <p data-i18n="hyp_chambers_lbl" class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Cavidades (Hipertrofia / Sobrecarga):</p>
+              <button data-hyp-chamber="RA" data-i18n="hyp_ra_btn" class="hyp-chamber-btn px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-medium text-left">1. Aurícula Derecha (RA)</button>
+              <button data-hyp-chamber="LA" data-i18n="hyp_la_btn" class="hyp-chamber-btn px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-medium text-left">2. Aurícula Izquierda (LA)</button>
+              <button data-hyp-chamber="RV" data-i18n="hyp_rv_btn" class="hyp-chamber-btn px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-medium text-left">3. Ventrículo Derecho (RV)</button>
+              <button data-hyp-chamber="LV" data-i18n="hyp_lv_btn" class="hyp-chamber-btn px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-medium text-left">4. Ventrículo Izquierdo (LV)</button>
             </div>
           </div>
 
           <!-- Alteración valvular -->
           <div class="flex items-center justify-between gap-2 text-xs">
-            <span class="text-slate-300 font-medium">Válvula / Flujo:</span>
+            <span data-i18n="hyp_valve_lbl" class="text-slate-300 font-medium">Válvula / Flujo:</span>
             <select id="hypValveSelect" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-xs text-slate-200">
-              <option value="none">Flujo normal (Válvulas libres)</option>
-              <option value="mitral_sten">Estenosis Mitral (turbulencia AI → VI)</option>
-              <option value="aortic_sten">Estenosis Aórtica (turbulencia VI → Ao)</option>
-              <option value="pulmonic_sten">Estenosis Pulmonar (turbulencia VD → AP)</option>
-              <option value="tricuspid_sten">Estenosis Tricuspídea (turbulencia AD → VD)</option>
-              <option value="mitral_reg">Insuficiencia Mitral (reflujo VI → AI)</option>
-              <option value="tricuspid_reg">Insuficiencia Tricuspídea (reflujo VD → AD)</option>
+              <option value="none" data-i18n="hyp_valve_none">Flujo normal (Válvulas libres)</option>
+              <option value="mitral_sten" data-i18n="hyp_valve_ms">Estenosis Mitral (turbulencia AI → VI)</option>
+              <option value="aortic_sten" data-i18n="hyp_valve_as">Estenosis Aórtica (turbulencia VI → Ao)</option>
+              <option value="pulmonic_sten" data-i18n="hyp_valve_ps">Estenosis Pulmonar (turbulencia VD → AP)</option>
+              <option value="tricuspid_sten" data-i18n="hyp_valve_ts">Estenosis Tricuspídea (turbulencia AD → VD)</option>
+              <option value="mitral_reg" data-i18n="hyp_valve_mr">Insuficiencia Mitral (reflujo VI → AI)</option>
+              <option value="tricuspid_reg" data-i18n="hyp_valve_tr">Insuficiencia Tricuspídea (reflujo VD → AD)</option>
             </select>
           </div>
 
           <!-- Grado -->
           <label class="flex items-center justify-between gap-3 text-xs">
-            <span class="text-slate-300">Intensidad (%)</span>
+            <span data-i18n="hyp_intensity_lbl" class="text-slate-300">Intensidad (%)</span>
             <input id="hypSeveritySlider" type="range" min="0" max="100" value="80" step="10" class="flex-1 accent-emerald-500">
             <span id="hypSeverityVal" class="mono w-12 text-right text-emerald-400">80%</span>
           </label>
@@ -509,7 +511,7 @@
             </svg>
           </div>
 
-          <div id="hypFeedback" class="text-xs bg-slate-950/90 border border-slate-800 rounded-xl p-3 text-slate-300 leading-relaxed">
+          <div id="hypFeedback" data-i18n="hyp_feedback_default" class="text-xs bg-slate-950/90 border border-slate-800 rounded-xl p-3 text-slate-300 leading-relaxed">
             Selecciona una cavidad (RA, LA, RV, LV) o una alteración valvular para observar la dinámica de flujo y el ECG.
           </div>
         </div>
@@ -518,7 +520,7 @@
         <div class="lg:col-span-7 space-y-4">
           <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
             <div class="flex items-center justify-between mb-2">
-              <h3 class="text-sm font-semibold text-white">ECG de 12 Derivaciones — Cambios por Hipertrofia y Valvulopatía</h3>
+              <h3 data-i18n="hyp_12lead_title" class="text-sm font-semibold text-white">ECG de 12 Derivaciones — Cambios por Hipertrofia y Valvulopatía</h3>
               <span class="text-[11px] text-emerald-400 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> LIVE</span>
             </div>
             <div id="hyp12LeadWrap" class="ecg-grid-dark rounded-xl border border-slate-800 p-2">
@@ -529,8 +531,9 @@
           <div class="bg-slate-900 border border-emerald-500/30 rounded-2xl p-4 space-y-3">
             <div class="flex flex-wrap items-center justify-between gap-2">
               <div>
-                <h3 class="text-sm font-bold text-emerald-300">🎮 Juego: Hipertrofias de 4 Cavidades &amp; Válvulas</h3>
-                <p id="hypGameClue" class="text-xs text-slate-300 mt-0.5">Pulsa "Nuevo reto" para identificar la cavidad o válvula afectada por su patrón en el ECG y la hemodinamia.</p>
+                <h3 data-i18n="hyp_game_title" class="text-sm font-bold text-emerald-300">🎮 Juego: Hipertrofias de 4 Cavidades &amp; Válvulas</h3>
+                <p id="hypGameClue" data-i18n="hyp_game_clue_default" class="text-xs text-slate-300 mt-0.5">Pulsa "Nuevo reto" para identificar la cavidad o válvula afectada por su patrón en el ECG y la hemodinamia.</p>
+                <button id="hypGameStartBtn" data-i18n="hyp_game_start" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition">Nuevo reto</button>
               </div>
               <div class="flex items-center gap-2">
                 <span id="hypGameScore" class="mono text-xs bg-slate-800 px-2.5 py-1 rounded-lg text-emerald-400">0 pts · Racha 0</span>
