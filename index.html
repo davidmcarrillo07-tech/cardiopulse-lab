@@ -1458,7 +1458,14 @@ ni la recomendación de un profesional de la salud.</div>
           if (['II', 'III', 'aVF'].includes(effLead)) v += gauss(dt, -0.16 - prOffset, 0.020, 0.14 * hypSev);
         }
         if (hypChamber === 'LA' || hypValve === 'mitral_sten' || hypValve === 'mitral_reg') {
-          if (effLead === 'II') v += gauss(dt, -0.18 - prOffset, 0.022, 0.10 * hypSev) + gauss(dt, -0.13 - prOffset, 0.022, 0.10 * hypSev);
+          if (effLead === 'II' || effLead === 'I' || effLead === 'aVL') {
+            const leadFactor = effLead === 'II' ? 1.0 : 0.55;
+            const pBase = -0.16 - prOffset;
+            v -= gauss(dt, pBase, 0.026, sc.p * 0.72 * hypSev);
+            v += gauss(dt, pBase - 0.028 * (1 + 0.2 * hypSev), 0.017, 0.115 * hypSev * leadFactor);
+            v += gauss(dt, pBase + 0.028 * (1 + 0.2 * hypSev), 0.018, 0.125 * hypSev * leadFactor);
+            v -= gauss(dt, pBase, 0.0085, 0.045 * hypSev * leadFactor);
+          }
           if (effLead === 'V1') v += gauss(dt, -0.15 - prOffset, 0.026, -0.13 * hypSev);
         }
         if (hasQRS && (hypChamber === 'RV' || hypValve === 'pulmonic_sten')) {
