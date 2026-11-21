@@ -1721,6 +1721,15 @@ ni la recomendación de un profesional de la salud.</div>
         card.querySelector('.load-mod-btn').addEventListener('click', () => {
           if (m.sca) {
             state.scaPreset = m.sca; switchTab('coronary'); updateCoronaryView();
+          } else if (m.cat === 'Hipertrofias') {
+          if (m.hypChamber) state.hypChamber = m.hypChamber;
+          if (m.hypValve) {
+            state.hypValve = m.hypValve;
+            const vSel = document.getElementById('hypValveSelect');
+            if (vSel) vSel.value = m.hypValve;
+          }
+          updateHypertrophyView();
+          switchTab('hypertrophy');
           } else {
             applyRhythmPreset(m.rhythm);
             if (m.k) { state.k = m.k; document.getElementById('sliderK').value = m.k; }
