@@ -1831,8 +1831,6 @@ ni la recomendación de un profesional de la salud.</div>
         v += gauss(dt, 0.095, 0.048, stShift) + gauss(dt, -0.025, 0.009, qMod);
         tAmp += tMod;
       }
-      const ca = cfg.ca ?? state.ca ?? 9.5;
-      const mg = cfg.mg ?? state.mg ?? 2.0;
       if (hasQRS) {
         if (ca < 8.5) {
           const hypoCa = Math.min(1, (8.5 - ca) / 3.0);
