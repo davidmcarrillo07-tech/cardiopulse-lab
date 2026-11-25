@@ -1866,6 +1866,7 @@ ni la recomendación de un profesional de la salud.</div>
       let aStart = 0.14, aEnd = 0.28;
       let vStart = 0.34, vEnd = 0.56;
       let vDrop = false;
+      const beatIndex = Math.floor(tSec / period);
       if (state.rhythm === 'avb1') {
         vStart = 0.46;
         vEnd = 0.66;
