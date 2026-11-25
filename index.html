@@ -1869,7 +1869,7 @@ ni la recomendación de un profesional de la salud.</div>
       if (state.rhythm === 'avb1') {
         vStart = 0.46;
         vEnd = 0.66;
-      } else if (state.rhythm === 'avb2_mobitz1') {
+      } else if (state.rhythm === 'avb2_m1') {
         const step = beatIndex % 4;
         if (step === 3) {
           vDrop = true;
@@ -1877,7 +1877,7 @@ ni la recomendación de un profesional de la salud.</div>
           vStart = 0.36 + step * 0.06;
           vEnd = Math.min(0.84, vStart + 0.18);
         }
-      } else if (state.rhythm === 'avb2_mobitz2') {
+      } else if (state.rhythm === 'avb2_m2') {
         const step = beatIndex % 3;
         vStart = 0.36;
         vEnd = 0.56;
@@ -1908,7 +1908,7 @@ ni la recomendación de un profesional de la salud.</div>
       document.getElementById('pathwayKent').setAttribute('opacity', state.rhythm === 'wpw' ? '1' : '0');
       let avMarkerOpacity = '0';
       if (state.rhythm === 'avb1') avMarkerOpacity = '0.45';
-      else if (state.rhythm === 'avb2_mobitz1' || state.rhythm === 'avb2_mobitz2') avMarkerOpacity = vDrop ? '1' : '0.35';
+      else if (state.rhythm === 'avb2_m1' || state.rhythm === 'avb2_m2') avMarkerOpacity = vDrop ? '1' : '0.35';
       else if (state.rhythm === 'avb3') avMarkerOpacity = '1';
       else if (state.rhythm.startsWith('avb')) avMarkerOpacity = '1';
       document.getElementById('blockMarkerAV').setAttribute('opacity', avMarkerOpacity);
