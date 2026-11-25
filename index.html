@@ -1834,21 +1834,31 @@ ni la recomendación de un profesional de la salud.</div>
       if (hasQRS) {
         if (ca < 8.5) {
           const hypoCa = Math.min(1, (8.5 - ca) / 3.0);
-          v += gauss(dt, 0.11, 0.045, 0.06 * hypoCa);
+          // Alarga segmento ST / meseta antes de la onda T
+          v += gauss(dt, 0.12, 0.055, 0.05 * hypoCa);
         } else if (ca > 10.5) {
           const hyperCa = Math.min(1, (ca - 10.5) / 4.0);
-          tAmp += 0.14 * hyperCa;
+          // Acorta meseta y realza un poco la onda T
+          tAmp += 0.16 * hyperCa;
+          tSigma = Math.max(0.028, tSigma * (1 - 0.25 * hyperCa));
         }
+
         if (mg > 3.0) {
           const hyperMg = Math.min(1, (mg - 3.0) / 2.0);
-          tAmp *= (1 - 0.30 * hyperMg);
+          tAmp *= (1 - 0.35 * hyperMg);
         }
       }
+
       const caShift = ca < 8.5
-        ? Math.min(0.065, (8.5 - ca) * 0.024)
-        : (ca > 10.5 ? -Math.min(0.055, (ca - 10.5) * 0.018) : 0);
-      const mgShift = mg < 1.7 ? Math.min(0.045, (1.7 - mg) * 0.03) : 0;
-      const qtShift = Math.max(-0.05, Math.min(0.10, (36.8 - temp) * 0.008 + caShift + mgShift));
+        ? Math.min(0.07, (8.5 - ca) * 0.026)
+        : (ca > 10.5 ? -Math.min(0.06, (ca - 10.5) * 0.02) : 0);
+      const mgShift = mg < 1.7 ? Math.min(0.05, (1.7 - mg) * 0.032) : 0;
+      const qtShift = Math.max(-0.05, Math.min(0.11, (36.8 - temp) * 0.008 + caShift + mgShift));
+
+      if (hasQRS && rhythm !== 'vtach') {
+        v += gauss(dt, 0.095 + qtShift * 0.35, 0.045, 0.02);
+        v += gauss(dt, 0.22 + qtShift, tSigma, tAmp);
+      }
       
       const hypChamber = cfg.hypChamber ?? state.hypChamber ?? null;
       const hypValve = cfg.hypValve ?? state.hypValve ?? 'none';
