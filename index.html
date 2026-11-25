@@ -391,6 +391,49 @@
       font-size: 0.75rem;
       line-height: 1rem;
     }
+    #weeklyChartBox {
+      display: flex !important;
+      align-items: flex-end !important;
+      justify-content: space-between !important;
+      gap: 0.5rem !important;
+      height: 8rem !important;
+      padding-top: 1rem !important;
+    }
+    #weeklyChartBox > div {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: flex-end !important;
+      gap: 0.25rem !important;
+      height: 100% !important;
+      flex: 1 1 0% !important;
+      min-width: 0 !important;
+    }
+    #weeklyChartBox > div > div {
+      width: 100% !important;
+      max-width: 26px !important;
+      min-height: 4px !important;
+      background-color: rgba(16, 185, 129, 0.75) !important;
+      border-radius: 0.25rem 0.25rem 0 0 !important;
+    }
+    #topicBarsBox > div > div:last-child {
+      width: 100% !important;
+      height: 0.375rem !important;
+      background-color: #1e293b !important;
+      border-radius: 9999px !important;
+      overflow: hidden !important;
+    }
+    #topicBarsBox > div > div:last-child > div {
+      height: 100% !important;
+      background-color: #10b981 !important;
+      border-radius: 9999px !important;
+    }
+    #accountModal .text-slate-500 {
+      color: #94a3b8 !important;
+    }
+    body.theme-light #accountModal .text-slate-500 {
+      color: #475569 !important;
+    }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
@@ -2335,32 +2378,33 @@ ni la recomendación de un profesional de la salud.</div>
       // Weekly bars (last 7 days)
       const weeklyBox = document.getElementById('weeklyChartBox'); weeklyBox.innerHTML = '';
       const days = [];
+      const nowLocal = new Date();
       for (let i = 6; i >= 0; i--) {
-        const d = new Date(Date.now() - i * 86400000).toISOString().slice(0, 10);
-        days.push({ label: d.slice(5), val: acc.stats.weekly[d] || 0 });
+        const dObj = new Date(nowLocal.getFullYear(), nowLocal.getMonth(), nowLocal.getDate() - i);
+        const isoLocal = `${dObj.getFullYear()}-${String(dObj.getMonth() + 1).padStart(2, '0')}-${String(dObj.getDate()).padStart(2, '0')}`;
+        days.push({ label: isoLocal.slice(5), val: acc.stats.weekly[isoLocal] || 0 });
       }
       const maxW = Math.max(5, ...days.map(x => x.val));
       days.forEach(d => {
-        const hPct = Math.max(8, Math.round((d.val / maxW) * 100));
+        const hPct = d.val > 0 ? Math.max(12, Math.round((d.val / maxW) * 100)) : 4;
         const col = document.createElement('div');
-        col.className = 'flex-1 flex flex-col items-center justify-end gap-1 h-full';
-        col.innerHTML = `<span class="mono text-[10px] text-slate-400">${d.val}</span><div class="w-full max-w-[26px] rounded-t bg-emerald-500/70" style="height:${hPct}%"></div><span class="text-[10px] text-slate-400">${d.label}</span>`;
+        col.innerHTML = `<span class="mono text-[10px] text-slate-400">${d.val}</span><div style="height:${hPct}%"></div><span class="text-[10px] text-slate-400">${d.label}</span>`;
         weeklyBox.appendChild(col);
       });
 
       // Topics
       const topicBox = document.getElementById('topicBarsBox'); topicBox.innerHTML = '';
-      let weakest = null, weakestPct = 101;
+      let weakest = null, weakestScore = 999;
       Object.entries(acc.stats.topics).forEach(([tName, st]) => {
         const tot = st.ok + st.err, pct = tot ? Math.round((st.ok / tot) * 100) : 0;
         const localizedTopic = translateTopicName(tName);
-        if (tot > 0 && pct < weakestPct) { weakestPct = pct; weakest = localizedTopic; }
+        const score = pct + (tot === 0 ? 50 : 0);
+        if (pct < 100 && score < weakestScore) { weakestScore = score; weakest = `${localizedTopic} (${pct}%)`; }
         const row = document.createElement('div');
-        row.innerHTML = `<div class="flex justify-between text-[11px] mb-0.5"><span class="text-slate-300">${localizedTopic}</span><span class="mono text-emerald-400">${pct}% (${st.ok}/${tot})</span></div><div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-emerald-500" style="width:${pct}%"></div></div>`;
+        row.innerHTML = `<div class="flex justify-between text-[11px] mb-0.5"><span class="text-slate-300">${localizedTopic}</span><span class="mono text-emerald-400">${pct}% (${st.ok}/${tot})</span></div><div><div style="width:${pct}%"></div></div>`;
         topicBox.appendChild(row);
       });
-      document.getElementById('weakTopicBadge').textContent = weakest ? `${t('acc_weak_topic')} ${weakest} (${weakestPct}%)` : '';
-
+      document.getElementById('weakTopicBadge').textContent = weakest ? `${t('acc_weak_topic')} ${weakest}` : '';
       // History
       const histItems = acc.history;
       const hQuiz = document.getElementById('historyQuizList'); hQuiz.innerHTML = histItems.length ? '' : `<p class="text-slate-500">${t('acc_hist_empty_quiz')}</p>`;
