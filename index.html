@@ -604,6 +604,8 @@
             <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-2"><div class="text-[10px] text-slate-400">QRS</div><div id="statQRS" class="mono text-sm font-bold text-amber-400">90 ms</div></div>
             <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-2"><div class="text-[10px] text-slate-400">QTc (Frid)</div><div id="statQTc" class="mono text-sm font-bold text-purple-400">410 ms</div></div>
             <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-2"><div class="text-[10px] text-slate-400">K⁺</div><div id="statK" class="mono text-sm font-bold text-rose-400">4.2 mEq/L</div></div>
+            <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-2"><div class="text-[10px] text-slate-400">Ca²⁺</div><div id="statCa" class="mono text-sm font-bold text-amber-400">9.5 mg/dL</div></div>
+            <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-2"><div class="text-[10px] text-slate-400">Mg²⁺</div><div id="statMg" class="mono text-sm font-bold text-purple-400">2.0 mg/dL</div></div>
             <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-2"><div class="text-[10px] text-slate-400" data-i18n="lbl_temp_short">Temp</div><div id="statTemp" class="mono text-sm font-bold text-cyan-400">36.8 °C</div></div>
           </div>
         </div>
@@ -638,6 +640,16 @@
               <span class="text-slate-300 w-36" data-i18n="var_temp">Temperatura (°C)</span>
               <input id="sliderTemp" type="range" min="28.0" max="41.0" value="36.8" step="0.2" class="flex-1 accent-cyan-500">
               <span id="valTemp" class="mono w-14 text-right text-cyan-400">36.8</span>
+            </label>
+            <label class="flex items-center justify-between gap-3">
+              <span class="text-slate-300 w-36">Calcio Ca²⁺ (mg/dL)</span>
+              <input id="sliderCa" type="range" min="5.5" max="15.0" value="9.5" step="0.1" class="flex-1 accent-amber-500">
+              <span id="valCa" class="mono w-14 text-right text-amber-400">9.5</span>
+            </label>
+            <label class="flex items-center justify-between gap-3">
+              <span class="text-slate-300 w-36">Magnesio Mg²⁺ (mg/dL)</span>
+              <input id="sliderMg" type="range" min="0.6" max="5.0" value="2.0" step="0.1" class="flex-1 accent-purple-500">
+              <span id="valMg" class="mono w-14 text-right text-purple-400">2.0</span>
             </label>
           </div>
         </div>
@@ -1640,7 +1652,7 @@ ni la recomendación de un profesional de la salud.</div>
 
     const state = {
       lang: 'es', paperMode: false, audioOn: false, frozen: false, sim12Lead: false,
-      speed: 25, gain: 10, monitorLead: 'II', rhythm: 'normal', hr: 72, pr: 160, qrs: 90, k: 4.2, temp: 36.8,
+      speed: 25, gain: 10, monitorLead: 'II', rhythm: 'normal', hr: 72, pr: 160, qrs: 90, k: 4.2, temp: 36.8, ca: 9.5, mg: 2.0,
       pins: JSON.parse(JSON.stringify(DEFAULT_PINS)), draggingPin: null,
       artery: null, stenosis: 0, scaPhase: 'acute', scaPreset: null,
       quizScore: 0, quizStreak: 0, quizTarget: null, quizHintOpen: false,
@@ -1703,6 +1715,8 @@ ni la recomendación de un profesional de la salud.</div>
       const qrs = cfg.qrs ?? state.qrs;
       const k = cfg.k ?? state.k;
       const temp = cfg.temp ?? state.temp;
+      const ca = cfg.ca ?? state.ca;
+      const mg = cfg.mg ?? state.mg;
       const usePinPhysics = cfg.usePinPhysics || false;
       const artery = cfg.artery ?? state.artery;
       const stenosis = cfg.stenosis ?? state.stenosis;
@@ -1819,8 +1833,10 @@ ni la recomendación de un profesional de la salud.</div>
       }
 
       if (hasQRS && rhythm !== 'vtach') {
-        const qtShift = Math.max(-0.04, Math.min(0.06, (36.8 - temp) * 0.008));
-        v += gauss(dt, 0.22 + qtShift, tSigma, tAmp);
+        const ca = cfg.ca ?? state.ca ?? 9.5, mg = cfg.mg ?? state.mg ?? 2.0;
+        const caShift = ca < 8.5 ? 0.035 : (ca > 10.5 ? -0.03 : 0);
+        const mgShift = mg < 1.7 ? 0.025 : 0;
+        const qtShift = Math.max(-0.04, Math.min(0.08, (36.8 - temp) * 0.008 + caShift + mgShift));
       }
       const hypChamber = cfg.hypChamber ?? state.hypChamber ?? null;
       const hypValve = cfg.hypValve ?? state.hypValve ?? 'none';
@@ -2530,6 +2546,11 @@ ni la recomendación de un profesional de la salud.</div>
       const qtc = Math.round(380 / Math.cbrt(60 / state.hr) + (36.8 - state.temp) * 8);
       document.getElementById('statQTc').textContent = `${qtc} ms`;
       document.getElementById('statK').textContent = `${state.k.toFixed(1)} mEq/L`;
+      const ca = state.ca ?? 9.5, mg = state.mg ?? 2.0;
+      document.getElementById('valCa').textContent = ca.toFixed(1);
+      document.getElementById('valMg').textContent = mg.toFixed(1);
+      document.getElementById('statCa').textContent = `${ca.toFixed(1)} mg/dL`;
+      document.getElementById('statMg').textContent = `${mg.toFixed(1)} mg/dL`;
       document.getElementById('statTemp').textContent = `${state.temp.toFixed(1)} °C`;
     }
 
@@ -2730,6 +2751,8 @@ ni la recomendación de un profesional de la salud.</div>
 
       document.getElementById('sliderHR').addEventListener('input', e => { state.hr = Number(e.target.value); syncSlidersUI(); });
       document.getElementById('sliderK').addEventListener('input', e => { state.k = Number(e.target.value); syncSlidersUI(); });
+      document.getElementById('sliderCa')?.addEventListener('input', e => { state.ca = Number(e.target.value); syncSlidersUI(); });
+      document.getElementById('sliderMg')?.addEventListener('input', e => { state.mg = Number(e.target.value); syncSlidersUI(); });
       document.getElementById('sliderTemp').addEventListener('input', e => { state.temp = Number(e.target.value); syncSlidersUI(); });
 
       function resetSimulatorEcg(keepRhythm) {
