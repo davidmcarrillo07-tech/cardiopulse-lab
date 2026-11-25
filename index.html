@@ -1863,7 +1863,6 @@ ni la recomendación de un profesional de la salud.</div>
 
     function updateHeartAnimation(tSec) {
       const period = 60 / Math.max(25, state.hr), phase = (tSec % period) / period;
-      let aContract = (phase > 0.14 && phase < 0.28), vContract = (phase > 0.34 && phase < 0.56);
       if (state.rhythm === 'avb1') {
         vStart = 0.46;
         vEnd = 0.66;
@@ -1881,6 +1880,8 @@ ni la recomendación de un profesional de la salud.</div>
         vEnd = 0.56;
         if (step === 2) vDrop = true;
       }
+      let aContract = (phase > aStart && phase < aEnd);
+      let vContract = !vDrop && (phase > vStart && phase < vEnd);
       if (state.rhythm === 'afib') aContract = false;
       else if (state.rhythm === 'avb3') {
         const pP = 60 / 75;
