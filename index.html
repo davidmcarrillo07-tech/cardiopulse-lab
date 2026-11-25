@@ -1831,13 +1831,27 @@ ni la recomendación de un profesional de la salud.</div>
         v += gauss(dt, 0.095, 0.048, stShift) + gauss(dt, -0.025, 0.009, qMod);
         tAmp += tMod;
       }
-
-      if (hasQRS && rhythm !== 'vtach') {
-        const ca = cfg.ca ?? state.ca ?? 9.5, mg = cfg.mg ?? state.mg ?? 2.0;
-        const caShift = ca < 8.5 ? 0.035 : (ca > 10.5 ? -0.03 : 0);
-        const mgShift = mg < 1.7 ? 0.025 : 0;
-        const qtShift = Math.max(-0.04, Math.min(0.08, (36.8 - temp) * 0.008 + caShift + mgShift));
+      const ca = cfg.ca ?? state.ca ?? 9.5;
+      const mg = cfg.mg ?? state.mg ?? 2.0;
+      if (hasQRS) {
+        if (ca < 8.5) {
+          const hypoCa = Math.min(1, (8.5 - ca) / 3.0);
+          v += gauss(dt, 0.11, 0.045, 0.06 * hypoCa);
+        } else if (ca > 10.5) {
+          const hyperCa = Math.min(1, (ca - 10.5) / 4.0);
+          tAmp += 0.14 * hyperCa;
+        }
+        if (mg > 3.0) {
+          const hyperMg = Math.min(1, (mg - 3.0) / 2.0);
+          tAmp *= (1 - 0.30 * hyperMg);
+        }
       }
+      const caShift = ca < 8.5
+        ? Math.min(0.065, (8.5 - ca) * 0.024)
+        : (ca > 10.5 ? -Math.min(0.055, (ca - 10.5) * 0.018) : 0);
+      const mgShift = mg < 1.7 ? Math.min(0.045, (1.7 - mg) * 0.03) : 0;
+      const qtShift = Math.max(-0.05, Math.min(0.10, (36.8 - temp) * 0.008 + caShift + mgShift));
+      
       const hypChamber = cfg.hypChamber ?? state.hypChamber ?? null;
       const hypValve = cfg.hypValve ?? state.hypValve ?? 'none';
       const hypSev = ((cfg.hypSeverity ?? state.hypSeverity ?? 80) / 100);
@@ -2546,11 +2560,24 @@ ni la recomendación de un profesional de la salud.</div>
       const qtc = Math.round(380 / Math.cbrt(60 / state.hr) + (36.8 - state.temp) * 8);
       document.getElementById('statQTc').textContent = `${qtc} ms`;
       document.getElementById('statK').textContent = `${state.k.toFixed(1)} mEq/L`;
-      const ca = state.ca ?? 9.5, mg = state.mg ?? 2.0;
-      document.getElementById('valCa').textContent = ca.toFixed(1);
-      document.getElementById('valMg').textContent = mg.toFixed(1);
-      document.getElementById('statCa').textContent = `${ca.toFixed(1)} mg/dL`;
-      document.getElementById('statMg').textContent = `${mg.toFixed(1)} mg/dL`;
+      const ca = state.ca ?? 9.5;
+      const mg = state.mg ?? 2.0;
+      const sliderCa = document.getElementById('sliderCa');
+      const sliderMg = document.getElementById('sliderMg');
+      if (sliderCa) sliderCa.value = ca;
+      if (sliderMg) sliderMg.value = mg;
+      const valCa = document.getElementById('valCa');
+      const valMg = document.getElementById('valMg');
+      const statCa = document.getElementById('statCa');
+      const statMg = document.getElementById('statMg');
+      if (valCa) valCa.textContent = ca.toFixed(1);
+      if (valMg) valMg.textContent = mg.toFixed(1);
+      if (statCa) statCa.textContent = `${ca.toFixed(1)} mg/dL`;
+      if (statMg) statMg.textContent = `${mg.toFixed(1)} mg/dL`;
+      const caQtAdj = ca < 8.5 ? (8.5 - ca) * 28 : (ca > 10.5 ? -(ca - 10.5) * 18 : 0);
+      const mgQtAdj = mg < 1.7 ? (1.7 - mg) * 24 : 0;
+      const qtcAdj = Math.round(380 / Math.cbrt(60 / state.hr) + (36.8 - state.temp) * 8 + caQtAdj + mgQtAdj);
+      document.getElementById('statQTc').textContent = `${qtcAdj} ms`;
       document.getElementById('statTemp').textContent = `${state.temp.toFixed(1)} °C`;
     }
 
@@ -2757,6 +2784,16 @@ ni la recomendación de un profesional de la salud.</div>
 
       function resetSimulatorEcg(keepRhythm) {
         simTime = 0; lastBeatSound = -1; state.frozen = false; document.getElementById('freezeBtn').textContent = t('btn_pause');
+        if (!keepRhythm) {
+          state.ca = 9.5;
+          state.mg = 2.0;
+          state.artery = null;
+          state.stenosis = 0;
+          state.scaPreset = null;
+          applyRhythmPreset('normal');
+        } else {
+          syncSlidersUI();
+        }
         const c = document.getElementById('liveEcgCanvas'); if (c) c.getContext('2d').clearRect(0, 0, c.width, c.height);
         if (!keepRhythm) applyRhythmPreset('normal'); else drawLiveMonitor();
       }
