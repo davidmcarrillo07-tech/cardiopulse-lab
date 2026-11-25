@@ -1668,7 +1668,9 @@ ni la recomendación de un profesional de la salud.</div>
       { id: 'wpw', es: 'Preexcitación WPW', en: 'WPW Pre-excitation', fr: 'Pré-excitation WPW', it: 'Preeccitazione WPW', de: 'WPW-Syndrom', ru: 'Синдром WPW', 'zh-CN': 'WPW预激综合征', ja: 'WPW症候群', ko: 'WPW 증후군', hr: 82, pr: 100, qrs: 125, desc_es: 'Haz de Kent conduce sin retardo nodal AV: PR corto + onda Delta + QRS ancho.', desc_en: 'Accessory Kent pathway bypasses AV node: short PR + Delta wave + wide QRS.' },
       { id: 'pericarditis', es: 'Pericarditis Aguda', en: 'Acute Pericarditis', fr: 'Péricardite Aiguë', it: 'Pericardite Acuta', de: 'Akute Perikarditis', ru: 'Острый перикардит', 'zh-CN': '急性心包炎', ja: '急性心膜炎', ko: '급성 심낭염', hr: 95, pr: 150, qrs: 90, desc_es: 'Elevación cóncava difusa del ST + descenso del PR (signo de Spodick).', desc_en: 'Diffuse concave ST elevation + PR segment depression (Spodick sign).' },
       { id: 'digitalis', es: 'Intox. Digitálica', en: 'Digitalis Effect', fr: 'Imprégnation Digitalique', it: 'Effetto Digitalico', de: 'Digitalis-Effekt', ru: 'Дигиталисная интоксикация', 'zh-CN': '洋地黄效应', ja: 'ジギタリス効果', ko: '디기탈리스 효과', hr: 54, pr: 210, qrs: 90, desc_es: 'Cubeta digitálica ("bigote de Salvador Dalí") con depresión cóncava del ST.', desc_en: 'Scooped ST depression ("Salvador Dalí mustache") with shortened QT.' },
-      { id: 'brugada', es: 'Patrón Brugada 1', en: 'Brugada Type 1', fr: 'Brugada Type 1', it: 'Brugada Tipo 1', de: 'Brugada Typ 1', ru: 'Синдром Бругада 1', 'zh-CN': 'Brugada 1型', ja: 'ブルガダ1型', ko: '브루가다 1형', hr: 72, pr: 160, qrs: 110, desc_es: 'Elevación abovedada del ST ≥2 mm en V1–V2 con T negativa.', desc_en: 'Coved ST elevation ≥2 mm in V1–V2 with negative T wave.' }
+      { id: 'brugada', es: 'Patrón Brugada 1', en: 'Brugada Type 1', fr: 'Brugada Type 1', it: 'Brugada Tipo 1', de: 'Brugada Typ 1', ru: 'Синдром Бругада 1', 'zh-CN': 'Brugada 1型', ja: 'ブルガダ1型', ko: '브루가다 1형', hr: 72, pr: 160, qrs: 110, desc_es: 'Elevación abovedada del ST ≥2 mm en V1–V2 con T negativa.', desc_en: 'Coved ST elevation ≥2 mm in V1–V2 with negative T wave.' },
+      { id: 'brugada2', es: 'Patrón Brugada 2', en: 'Brugada Type 2', fr: 'Brugada Type 2', it: 'Brugada Tipo 2', de: 'Brugada Typ 2', ru: 'Синдром Бругада 2', 'zh-CN': 'Brugada 2型', ja: 'ブルガダ2型', ko: '브루가다 2형', hr: 72, pr: 160, qrs: 105, desc_es: 'Morfología en "silla de montar" en V1–V2 con onda r\' alta y onda T positiva o isobifásica.', desc_en: 'Saddle-back pattern in V1–V2 with high r\' and positive or biphasic T wave.' },
+      { id: 'brugada3', es: 'Patrón Brugada 3', en: 'Brugada Type 3', fr: 'Brugada Type 3', it: 'Brugada Tipo 3', de: 'Brugada Typ 3', ru: 'Синдром Бругада 3', 'zh-CN': 'Brugada 3型', ja: 'ブルガダ3型', ko: '브루가다 3형', hr: 72, pr: 160, qrs: 100, desc_es: 'Morfología en silla de montar o cúpula en V1–V2 con elevación del ST < 2 mm.', desc_en: 'Saddle-back or coved morphology in V1–V2 with ST elevation < 2 mm.' },
     ];
 
     function getRhythmName(r) { return r[state.lang] || r.en || r.es; }
@@ -1775,6 +1777,14 @@ ni la recomendación de un profesional de la salud.</div>
       if (rhythm === 'pericarditis' && effLead !== 'aVR') v += gauss(dt, 0.045, 0.018, 0.22) + gauss(dt, 0.105, 0.04, 0.10) + gauss(dt, -0.075, 0.028, -0.07);
       else if (rhythm === 'digitalis' && ['V4', 'V5', 'V6', 'II'].includes(effLead)) v += gauss(dt, 0.09, 0.045, -0.22);
       else if (rhythm === 'brugada' && (effLead === 'V1' || effLead === 'V2')) { v += gauss(dt, 0.06, 0.03, 0.38); tAmp = -0.28; }
+      else if (rhythm === 'brugada2' && (effLead === 'V1' || effLead === 'V2')) {
+        v += gauss(dt, 0.045, 0.016, 0.34) - gauss(dt, 0.075, 0.020, 0.12) + gauss(dt, 0.115, 0.025, 0.16);
+        tAmp = 0.24;
+      }
+      else if (rhythm === 'brugada3' && (effLead === 'V1' || effLead === 'V2')) {
+        v += gauss(dt, 0.045, 0.016, 0.14) - gauss(dt, 0.075, 0.020, 0.05) + gauss(dt, 0.115, 0.025, 0.07);
+        tAmp = 0.12;
+      }
 
       if (hasQRS) {
         let stShift = 0, tMod = 0, qMod = 0;
