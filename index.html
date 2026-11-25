@@ -1881,8 +1881,6 @@ ni la recomendación de un profesional de la salud.</div>
         vEnd = 0.56;
         if (step === 2) vDrop = true;
       }
-      let aContract = (phase > aStart && phase < aEnd);
-      let vContract = !vDrop && (phase > vStart && phase < vEnd);
       if (state.rhythm === 'afib') aContract = false;
       else if (state.rhythm === 'avb3') {
         const pP = 60 / 75;
