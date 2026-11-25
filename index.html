@@ -1864,10 +1864,34 @@ ni la recomendación de un profesional de la salud.</div>
     function updateHeartAnimation(tSec) {
       const period = 60 / Math.max(25, state.hr), phase = (tSec % period) / period;
       let aContract = (phase > 0.14 && phase < 0.28), vContract = (phase > 0.34 && phase < 0.56);
+      if (state.rhythm === 'avb1') {
+        vStart = 0.46;
+        vEnd = 0.66;
+      } else if (state.rhythm === 'avb2_mobitz1') {
+        const step = beatIndex % 4;
+        if (step === 3) {
+          vDrop = true;
+        } else {
+          vStart = 0.36 + step * 0.06;
+          vEnd = Math.min(0.84, vStart + 0.18);
+        }
+      } else if (state.rhythm === 'avb2_mobitz2') {
+        const step = beatIndex % 3;
+        vStart = 0.36;
+        vEnd = 0.56;
+        if (step === 2) vDrop = true;
+      }
+      let aContract = (phase > aStart && phase < aEnd);
+      let vContract = !vDrop && (phase > vStart && phase < vEnd);
       if (state.rhythm === 'afib') aContract = false;
-      else if (state.rhythm === 'avb3') { const pP = 60 / 75, pPh = (tSec % pP) / pP; aContract = (pPh > 0.15 && pPh < 0.32); }
-      else if (state.rhythm === 'vtach' || state.rhythm === 'torsades') aContract = false;
-
+      else if (state.rhythm === 'avb3') {
+        const pP = 60 / 75;
+        const pPh = (tSec % pP) / pP;
+        aContract = (pPh > 0.15 && pPh < 0.32);
+        vContract = (phase > 0.34 && phase < 0.56);
+      } else if (state.rhythm === 'vtach' || state.rhythm === 'torsades') {
+        aContract = false;
+      }
       const ra = document.getElementById('chamberRA'), la = document.getElementById('chamberLA'), rv = document.getElementById('chamberRV'), lv = document.getElementById('chamberLV');
       if (state.rhythm === 'afib') { const j = 1 + 0.02 * Math.sin(tSec * 45); ra.style.transform = `scale(${j})`; la.style.transform = `scale(${j})`; }
       else { ra.style.transform = aContract ? 'scale(0.88)' : 'scale(1)'; la.style.transform = aContract ? 'scale(0.88)' : 'scale(1)'; }
@@ -1876,11 +1900,16 @@ ni la recomendación de un profesional de la salud.</div>
       document.getElementById('nodeSA').setAttribute('fill', (phase > 0.08 && phase < 0.18) ? '#facc15' : '#334155');
       document.getElementById('nodeAV').setAttribute('fill', (phase > 0.22 && phase < 0.34) ? '#38bdf8' : '#334155');
       document.getElementById('tractAtria').setAttribute('stroke', aContract ? '#facc15' : '#475569');
-      document.getElementById('bundleHis').setAttribute('stroke', (phase > 0.30 && phase < 0.40) ? '#38bdf8' : '#475569');
+      document.getElementById('bundleHis').setAttribute('stroke', (!vDrop && state.rhythm !== 'avb3' && phase > 0.30 && phase < 0.40) ? '#38bdf8' : '#475569');
       document.getElementById('branchRBB').setAttribute('stroke', (vContract && state.rhythm !== 'rbbb') ? '#10b981' : '#475569');
       document.getElementById('branchLBB').setAttribute('stroke', (vContract && state.rhythm !== 'lbbb') ? '#10b981' : '#475569');
       document.getElementById('pathwayKent').setAttribute('opacity', state.rhythm === 'wpw' ? '1' : '0');
-      document.getElementById('blockMarkerAV').setAttribute('opacity', state.rhythm.startsWith('avb') ? '1' : '0');
+      let avMarkerOpacity = '0';
+      if (state.rhythm === 'avb1') avMarkerOpacity = '0.45';
+      else if (state.rhythm === 'avb2_mobitz1' || state.rhythm === 'avb2_mobitz2') avMarkerOpacity = vDrop ? '1' : '0.35';
+      else if (state.rhythm === 'avb3') avMarkerOpacity = '1';
+      else if (state.rhythm.startsWith('avb')) avMarkerOpacity = '1';
+      document.getElementById('blockMarkerAV').setAttribute('opacity', avMarkerOpacity);
       document.getElementById('blockMarkerRBB').setAttribute('opacity', state.rhythm === 'rbbb' ? '1' : '0');
       document.getElementById('blockMarkerLBB').setAttribute('opacity', state.rhythm === 'lbbb' ? '1' : '0');
       if (state.rhythm === 'vfib') { const jv = 1 + 0.025 * Math.sin(tSec * 52); rv.style.transform = `scale(${jv})`; lv.style.transform = `scale(${2 - jv})`; }
