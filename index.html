@@ -1833,42 +1833,42 @@ ni la recomendación de un profesional de la salud.</div>
       }
       if (hasQRS) {
         let caQtShift = 0;
-      if (hasQRS) {
-        if (ca < 8.5) {
-          const hypoCa = Math.min(1, (8.5 - ca) / 3.0);
-          caQtShift = 0.075 * hypoCa;
-          tAmp *= (1 - 0.55 * hypoCa);
-          if (ca < 7.2) {
-            v -= gauss(dt, 0.24 + caQtShift, 0.042, 0.18 * ((7.2 - ca) / 1.7));
-          }
-        } else if (ca > 10.5) {
-          const hyperCa = Math.min(1, (ca - 10.5) / 4.5);
-          caQtShift = -0.065 * hyperCa;
-          tAmp = Math.max(tAmp, 0.26) * (1 + 0.30 * hyperCa);
-        }
-      }
-      let mgQtShift = 0;
-      if (mg < 1.7) {
-        const hypoMg = Math.min(1, (1.7 - mg) / 1.1);
-        mgQtShift = 0.04 * hypoMg;
-        v -= gauss(dt, -0.16 - prOffset, 0.026, Math.abs(sc.p) * 0.55 * hypoMg);
-        if (hasQRS) v -= gauss(dt, 0.095, 0.045, 0.10 * hypoMg);
-      } else if (mg > 2.6) {
-        const hyperMg = Math.min(1, (mg - 2.6) / 2.4);
-        mgQtShift = -0.025 * hyperMg;
-        tAmp *= (1 - 0.45 * hyperMg);
         if (hasQRS) {
-          v += gauss(dt, 0.026, 0.017, -0.12 * hyperMg);
-          v += gauss(dt, -0.12 - prOffset, 0.025, sc.p * 0.4 * hyperMg);
+          if (ca < 8.5) {
+            const hypoCa = Math.min(1, (8.5 - ca) / 3.0);
+            caQtShift = 0.075 * hypoCa;
+            tAmp *= (1 - 0.55 * hypoCa);
+            if (ca < 7.2) {
+              v -= gauss(dt, 0.24 + caQtShift, 0.042, 0.18 * ((7.2 - ca) / 1.7));
+            }
+          } else if (ca > 10.5) {
+            const hyperCa = Math.min(1, (ca - 10.5) / 4.5);
+            caQtShift = -0.065 * hyperCa;
+            tAmp = Math.max(tAmp, 0.26) * (1 + 0.30 * hyperCa);
+          }
         }
-      }
-      const qtShift = Math.max(
-        -0.07,
-        Math.min(0.12, (36.8 - temp) * 0.008 + caQtShift + mgQtShift)
-      );
-      if (hasQRS && rhythm !== 'vtach') {
-        v += gauss(dt, 0.22 + qtShift, tSigma, tAmp);
-      }
+        let mgQtShift = 0;
+        if (mg < 1.7) {
+          const hypoMg = Math.min(1, (1.7 - mg) / 1.1);
+          mgQtShift = 0.04 * hypoMg;
+          v -= gauss(dt, -0.16 - prOffset, 0.026, Math.abs(sc.p) * 0.55 * hypoMg);
+          if (hasQRS) v -= gauss(dt, 0.095, 0.045, 0.10 * hypoMg);
+        } else if (mg > 2.6) {
+          const hyperMg = Math.min(1, (mg - 2.6) / 2.4);
+          mgQtShift = -0.025 * hyperMg;
+          tAmp *= (1 - 0.45 * hyperMg);
+          if (hasQRS) {
+            v += gauss(dt, 0.026, 0.017, -0.12 * hyperMg);
+            v += gauss(dt, -0.12 - prOffset, 0.025, sc.p * 0.4 * hyperMg);
+          }
+        }
+        const qtShift = Math.max(
+          -0.07,
+          Math.min(0.12, (36.8 - temp) * 0.008 + caQtShift + mgQtShift)
+        );
+        if (hasQRS && rhythm !== 'vtach') {
+          v += gauss(dt, 0.22 + qtShift, tSigma, tAmp);
+        }
     
       const hypChamber = cfg.hypChamber ?? state.hypChamber ?? null;
       const hypValve = cfg.hypValve ?? state.hypValve ?? 'none';
