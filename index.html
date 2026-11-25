@@ -434,6 +434,46 @@
     body.theme-light #accountModal .text-slate-500 {
       color: #475569 !important;
     }
+    .cp-logo-mark {
+      position: relative;
+      width: 2.35rem;
+      height: 2.35rem;
+      border-radius: 0.8rem;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.24), rgba(6, 182, 212, 0.14));
+      border: 1px solid rgba(52, 211, 153, 0.55);
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .cp-logo-mark::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 25%, rgba(255, 255, 255, 0.22) 50%, transparent 75%);
+      transform: translateX(-140%);
+      transition: transform 0.6s ease;
+    }
+    .cp-logo-mark:hover::after {
+      transform: translateX(140%);
+    }
+    .cp-logo-pulse {
+      width: 1.45rem;
+      height: 1.45rem;
+      color: #34d399;
+      filter: drop-shadow(0 0 6px rgba(52, 211, 153, 0.55));
+    }
+    body.theme-light .cp-logo-mark {
+      background: linear-gradient(135deg, #d1fae5, #e0f2fe);
+      border-color: #059669;
+      box-shadow: 0 2px 8px rgba(5, 150, 105, 0.14);
+    }
+    body.theme-light .cp-logo-pulse {
+      color: #059669;
+      filter: none;
+    }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
@@ -450,6 +490,11 @@
         <div>
           <h1 class="text-sm sm:text-base font-bold tracking-tight text-white leading-tight">CardioPulse Lab</h1>
           <p id="subtitleText" class="text-[11px] text-slate-400 leading-tight" data-i18n="subtitle">Simulador Interactivo de ECG & Electrofisiología</p>
+        </div>
+        <div class="cp-logo-mark" aria-hidden="true">
+          <svg class="cp-logo-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+            <path d="M2 12h4.2l2.3-6.5 3.6 13 2.7-6.5H22" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </div>
       </div>
 
